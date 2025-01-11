@@ -1,0 +1,32 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+
+option java_multiple_files =  true;
+option java_package = "core.run.vote";
+
+package sharacter;
+
+
+message SharacterRequest {
+  optional string id = 1;
+}
+
+message SharacterResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string role=4;
+}
+
+message SharacterForm {
+  string name = 2;
+  string description = 3;
+  string role=4;
+}
+
+service SharacterService {
+  rpc findAll(google.protobuf.Empty) returns (stream SharacterResponse);
+  rpc findOne(SharacterRequest) returns (SharacterResponse);
+  rpc findMany(stream SharacterRequest) returns (stream SharacterResponse);
+}
