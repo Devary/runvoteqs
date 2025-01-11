@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
-import {SharacterData} from "../model/data-model";
+import {SharacterData, SharacterRole} from "../model/data-model";
 import {GlobalService} from "./GlobalService"
+import {Observable} from "rxjs";
 
 
 @Injectable()
@@ -28,6 +29,9 @@ export class SharacterService{
   }
   update(data: SharacterData) {
     return this.service.getClient().put<SharacterData>(this.URI+"/"+data.id,data);
+  }
+  getRoles():Observable<SharacterRole[]> {
+    return this.service.getClient().get<SharacterRole[]>(this.URI+"/roles");
   }
 
 }

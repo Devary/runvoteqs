@@ -8,7 +8,6 @@ export class GlobalService {
   PORT: string = ":8811";
   constructor(private http: HttpClient) {
     this.buildURI();
-    console.log(this.buildURI())
   }
 
   buildURI() {

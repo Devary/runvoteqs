@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
@@ -73,5 +74,11 @@ public class SharacterResource {
                 .map(deleted -> deleted
                         ? Response.ok().status(NO_CONTENT).build()
                         : Response.ok().status(NOT_FOUND).build());
+    }
+
+    @GET
+    @Path("/roles")
+    public Uni<List<Sharacter>> getRoles() {
+        return Role.listAll(Sort.by("name"));
     }
 }

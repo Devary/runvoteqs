@@ -11,19 +11,15 @@ export interface SinglePoll {
 export interface SharacterData {
     id:string;
     name:string;
-    desc:string;
-    role:string;
-    title:string;
-    image:string;
+    description:string;
+    role:SharacterRole[];
 }
 
 export class SharacterDataImpl{
   id= "";
   name= "";
-  title= "";
-  image= "";
-  desc= "";
-  role= "";
+  description= "";
+  role:SharacterRole[]= [];
 }
 
 export class Sharacter implements TreeNode{
@@ -34,4 +30,8 @@ export class Sharacter implements TreeNode{
     data?: any;
     children?: TreeNode[];
 
+}
+export interface SharacterRole {
+  name: string;
+  id : string;
 }
