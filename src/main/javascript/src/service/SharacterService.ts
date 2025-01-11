@@ -26,8 +26,8 @@ export class SharacterService{
   delete(id: string) {
     return this.service.getClient().delete<string>(this.URI+"/"+id);
   }
-  update(id: string, data: SharacterData) {
-    return this.service.getClient().put<string>(this.URI+"/"+id,data);
+  update(data: SharacterData) {
+    return this.service.getClient().put<SharacterData>(this.URI+"/"+data.id,data);
   }
 
 }

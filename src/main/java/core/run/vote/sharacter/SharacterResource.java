@@ -48,15 +48,19 @@ public class SharacterResource {
     }
 
     @PUT
-    @Path("{id}")
-    public Uni<Response> update(Long id, Sharacter sharacter) {
+    @Path("/{id}")
+    public Uni<Response> update(@PathParam("id") UUID id, Sharacter sharacter) {
         if (sharacter == null || sharacter.getName() == null) {
             throw new WebApplicationException("Sharacter name was not set on request.", 422);
         }
 
         return Panache
                 .withTransaction(() -> Sharacter.<Sharacter> findById(id)
-                        //.onItem().ifNotNull().invoke(entity -> entity.getName() = sharacter.getName())
+                        .onItem().ifNotNull().invoke(entity -> {
+                            entity.setName(sharacter.getName());
+                            entity.setRole(sharacter.getRole());
+                            entity.setDescription(sharacter.getDescription());
+                        } )
                 )
                 .onItem().ifNotNull().transform(entity -> Response.ok(entity).build())
                 .onItem().ifNull().continueWith(Response.ok().status(NOT_FOUND)::build);
