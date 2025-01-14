@@ -3,7 +3,7 @@ import {Table, TableModule} from "primeng/table";
 import {SharacterService} from "../../service/SharacterService";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SharacterData, SharacterDataImpl, SharacterRole} from "../../model/data-model";
-import {Button} from "primeng/button";
+import {Button, ButtonDirective} from "primeng/button";
 import {MultiSelectChangeEvent, MultiSelectModule} from "primeng/multiselect";
 import {DropdownModule} from "primeng/dropdown";
 import {InputTextModule} from "primeng/inputtext";
@@ -32,6 +32,7 @@ import {NgForOf} from "@angular/common";
     FaIconComponent,
     ReactiveFormsModule,
     NgForOf,
+    ButtonDirective,
   ],
   templateUrl: './sharacter.component.html',
   styleUrl: './sharacter.component.scss',
@@ -51,6 +52,8 @@ export class SharacterComponent implements OnInit,OnDestroy{
   //destroy
   destroyed = new BehaviorSubject(null)
   protected readonly faCoffee = faCoffee;
+  loading: boolean = false;
+  selectedShars!: SharacterData[];
 
   constructor(private sharacterService: SharacterService,private destroyRef : DestroyRef) {
     this.sharacterService.getAll().subscribe( data => this.sharacters = data);
@@ -71,6 +74,7 @@ export class SharacterComponent implements OnInit,OnDestroy{
     this.sharacterService.getAll()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(data => this.sharacters = data);
+    this.dt.reset();
   }
 
   delete(id :string) {
@@ -110,7 +114,6 @@ export class SharacterComponent implements OnInit,OnDestroy{
       this.sharacterService.update(this.sharacter);
       this.isEdit = false;
     }else if(this.isCreate){
-      console.log(this.sharacter)
       this.sharacterService.create(this.sharacter)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(data => this.sharacters.push(data));
@@ -122,5 +125,9 @@ export class SharacterComponent implements OnInit,OnDestroy{
 
   debug($event:any) {
     console.log(this.sharacter.role)
+  }
+
+  clear() {
+    this.dt.clear();
   }
 }

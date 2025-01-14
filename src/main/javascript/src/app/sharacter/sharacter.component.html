@@ -15,20 +15,60 @@
   (change)="refreshTable()"
   [paginator]="true"
   [rows]="20"
+  dataKey="id"
   [tableStyle]="{ 'min-width': '50rem' }"
   [rowsPerPageOptions]="[5, 10, 20]"
+  [showCurrentPageReport]="true"
+  [loading]="loading"
+  [globalFilterFields]="['name','description','role']"
+  [(selection)]="selectedShars"
+  selectionMode="multiple"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
 >
+
   <ng-template pTemplate="header">
     <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Role</th>
-      <th>Action</th>
+      <th style="min-width:18rem">ID</th>
+      <th style="min-width:18rem">
+        <div class="flex justify-content-center align-items-center">
+        Name
+        </div>
+      </th>
+      <th style="min-width:54rem">Description</th>
+      <th style="min-width:18rem">Role</th>
+      <th style="min-width:12rem">Action</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="name"
+          placeholder="Search by name"
+          ariaLabel="Filter Name"
+        ></p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="description"
+          placeholder="Search by description"
+          ariaLabel="Filter description"
+        ></p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="role"
+          placeholder="Search by role"
+          ariaLabel="Filter role"
+        ></p-columnFilter>
+      </th>
+      <th></th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-sharacter>
-    <tr>
+  <ng-template pTemplate="body" let-sharacter let-rowIndex="rowIndex">
+    <tr [pSelectableRow]="sharacter" [pSelectableRowIndex]="rowIndex">
       <td>{{ sharacter.id }}</td>
       <td>{{ sharacter.name }}</td>
       <td>{{ sharacter.description }}</td>
