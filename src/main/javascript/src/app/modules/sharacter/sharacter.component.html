@@ -1,0 +1,144 @@
+<p-toolbar styleClass="mb-6">
+  <ng-template #start>
+    <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+    <p-button severity="secondary" label="Delete selected ({{!selectedShars?0:selectedShars.length}})" icon="pi pi-trash" outlined (onClick)="deleteSelectedSharacters()" [disabled]="!selectedShars || !selectedShars.length" />
+  </ng-template>
+
+  <ng-template #end>
+    <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+    <fa-icon [icon]="faCoffee"></fa-icon>
+  </ng-template>
+</p-toolbar>
+<p-table
+  #dt
+  [value]="sharacters()"
+  (onLazyLoad)="sharacters()"
+  (change)="sharacters()"
+  [paginator]="true"
+  [rows]="20"
+  dataKey="id"
+  [tableStyle]="{ 'min-width': '50rem' }"
+  [rowsPerPageOptions]="[5, 10, 20]"
+  [showCurrentPageReport]="true"
+  [loading]="loading"
+  [rowHover]="true"
+  [globalFilterFields]="['name','description','role']"
+  [(selection)]="selectedShars"
+  [contextMenu]="true"
+  contextMenuSelectionMode="separate"
+  selectionMode="multiple"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+>
+
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="min-width:18rem">ID</th>
+      <th style="min-width:18rem">
+        <div class="flex justify-content-center align-items-center">
+        Name
+        </div>
+      </th>
+      <th style="min-width:54rem">Description</th>
+      <th style="min-width:18rem">Role</th>
+      <th style="min-width:12rem">Action</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="name"
+          placeholder="Search by name"
+          ariaLabel="Filter Name"
+        ></p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="description"
+          placeholder="Search by description"
+          ariaLabel="Filter description"
+          [ngStyle]="{width:'100%'}"
+        ></p-columnFilter>
+      </th>
+      <th style="min-width:10rem">
+        <div class="flex items-center">
+          Roles
+          <p-columnFilter field="role" matchMode="equals" display="menu">
+            <ng-template #filter let-role let-filter="filterCallback">
+              <p-dropdown  [options]="roles()" (onChange)="console.log(roles())" placeholder="Any">
+                <ng-template let-option #item>
+                  <p-tag [value]="option.name" [id]="option.id" severity="danger" />
+                </ng-template>
+              </p-dropdown>
+            </ng-template>
+          </p-columnFilter>
+        </div>
+      </th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-sharacter let-rowIndex="rowIndex">
+
+    <tr [pSelectableRow]="sharacter" [pSelectableRowIndex]="rowIndex" >
+      <td>{{ sharacter.id }}</td>
+      <td>{{ sharacter.name }}</td>
+      <td [innerHtml]="sharacter.description"></td>
+      <td><label *ngFor="let role of sharacter.role">
+        {{ role.name }}
+      </label></td>
+      <td><p-button icon="pi pi-trash" severity="danger" (onClick)="delete(sharacter)" /><p-button icon="pi pi-pencil" severity="info" (onClick)="edit(sharacter)" /></td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="5" class="text-center">No character found.</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+
+<p-dialog [(visible)]="createSharacterDialog" [style]="{ width: '650px',height:'100%' }" header="Sharacter Details" [modal]="true" (onHide)="hideDialog()">
+  <ng-template #content>
+
+    <div class="flex flex-col gap-6">
+        <div>
+          <label for="name" class="block font-bold mb-3">Name*</label>
+          <input type="text" id="name" pInputText [(ngModel)]="sharacter.name"  autofocus fluid />
+          <small class="text-gray-500">Name must contains at least 4 characters.</small>
+        </div>
+        <div>
+          <label for="description" class="block font-bold mb-3">Description*</label>
+          <p-editor id="description" [(ngModel)]="sharacter.description"  required fluid minlength="50">
+            <ng-template #header>
+        <span class="ql-formats">
+            <button type="button" class="ql-bold" aria-label="Bold"></button>
+            <button type="button" class="ql-italic" aria-label="Italic"></button>
+            <button type="button" class="ql-underline" aria-label="Underline"></button>
+        </span>
+            </ng-template>
+          </p-editor>
+        </div>
+      <div>
+        <label for="role" class="block font-bold mb-3">Role*</label>
+        <p-multiselect [options]="roles()" optionLabel="name" placeholder="Select Roles" [(ngModel)]="sharacter.role" [maxSelectedLabels]="3" styleClass="w-full md:w-80"  id="role" [style]="{ width: '100%' }" ></p-multiselect>
+      </div>
+      <div>
+        <label for="role" class="block font-bold mb-3">Upload an image*</label>
+        <p-fileupload name="demo[]" url="https://www.primefaces.org/cdn/api/upload.php" (onUpload)="null" [multiple]="true" accept="image/*" maxFileSize="1000000" mode="advanced">
+          <ng-template #empty>
+            <div>Drag and drop files to here to upload.</div>
+          </ng-template>
+        </p-fileupload>
+      </div>
+      </div>
+  </ng-template>
+
+    <ng-template #footer>
+      <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+      <p-button label="Save" icon="pi pi-plus" text (onClick)="processEntity()" />
+    </ng-template>
+</p-dialog>
+
+<p-toast />
+<p-confirm-dialog [style]="{ width: '450px' }" label="Delete"/>

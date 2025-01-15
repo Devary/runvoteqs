@@ -1,5 +1,5 @@
 import {Routes} from '@angular/router';
-import {SharacterComponent} from "./sharacter/sharacter.component";
+import {SharacterComponent} from "./modules/sharacter/sharacter.component";
 import {Empty} from "./pages/empty/empty";
 import {Notfound} from "./pages/notfound/notfound";
 

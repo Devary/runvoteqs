@@ -7,20 +7,16 @@ import static jakarta.ws.rs.core.Response.Status.NO_CONTENT;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 import org.jboss.logging.Logger;
-
-
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Uni;
 
 @Path("sharacters")
-@ApplicationScoped
 @Produces("application/json")
 @Consumes("application/json")
 public class SharacterResource {
@@ -59,8 +55,8 @@ public class SharacterResource {
                 .withTransaction(() -> Sharacter.<Sharacter> findById(id)
                         .onItem().ifNotNull().invoke(entity -> {
                             entity.setName(sharacter.getName());
-                            entity.setRole(sharacter.getRole());
                             entity.setDescription(sharacter.getDescription());
+                            entity.setRole(sharacter.getRole());
                         } )
                 )
                 .onItem().ifNotNull().transform(entity -> Response.ok(entity).build())
@@ -81,4 +77,5 @@ public class SharacterResource {
     public Uni<List<Sharacter>> getRoles() {
         return Role.listAll(Sort.by("name"));
     }
+
 }

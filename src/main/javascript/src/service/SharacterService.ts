@@ -28,6 +28,7 @@ export class SharacterService{
     return this.service.getClient().delete<string>(this.URI+"/"+id);
   }
   update(data: SharacterData) {
+    console.log("update", data);
     return this.service.getClient().put<SharacterData>(this.URI+"/"+data.id,data);
   }
   getRoles():Observable<SharacterRole[]> {
