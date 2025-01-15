@@ -15,7 +15,7 @@
   (onLazyLoad)="sharacters()"
   (change)="sharacters()"
   [paginator]="true"
-  [rows]="20"
+  [rows]="tablePageSize"
   dataKey="id"
   [tableStyle]="{ 'min-width': '50rem' }"
   [rowsPerPageOptions]="[5, 10, 20]"
@@ -32,18 +32,14 @@
 
   <ng-template pTemplate="header">
     <tr>
-      <th style="min-width:18rem">ID</th>
-      <th style="min-width:18rem">
-        <div class="flex justify-content-center align-items-center">
-        Name
-        </div>
+      <th>
+        <div class="flex justify-content-center align-items-center">Name</div>
       </th>
-      <th style="min-width:54rem">Description</th>
-      <th style="min-width:18rem">Role</th>
-      <th style="min-width:12rem">Action</th>
+      <th >Description</th>
+      <th >Role</th>
+      <th >Action</th>
     </tr>
     <tr>
-      <th></th>
       <th>
         <p-columnFilter
           type="text"
@@ -81,7 +77,6 @@
   <ng-template pTemplate="body" let-sharacter let-rowIndex="rowIndex">
 
     <tr [pSelectableRow]="sharacter" [pSelectableRowIndex]="rowIndex" >
-      <td>{{ sharacter.id }}</td>
       <td>{{ sharacter.name }}</td>
       <td [innerHtml]="sharacter.description"></td>
       <td><label *ngFor="let role of sharacter.role">

@@ -15,7 +15,7 @@
   (onLazyLoad)="roles()"
   (change)="roles()"
   [paginator]="true"
-  [rows]="20"
+  [rows]="tablePageSize"
   dataKey="id"
   [tableStyle]="{ 'min-width': '50rem' }"
   [rowsPerPageOptions]="[5, 10, 20]"
@@ -32,17 +32,15 @@
 
   <ng-template pTemplate="header">
     <tr>
-      <th style="min-width:18rem">ID</th>
-      <th style="min-width:18rem">
+      <th>
         <div class="flex justify-content-center align-items-center">
         Name
         </div>
       </th>
-      <th style="min-width:54rem">Description</th>
-      <th style="min-width:12rem">Action</th>
+      <th>Description</th>
+      <th>Action</th>
     </tr>
     <tr>
-      <th></th>
       <th>
         <p-columnFilter
           type="text"
@@ -66,9 +64,8 @@
   <ng-template pTemplate="body" let-role let-rowIndex="rowIndex">
 
     <tr [pSelectableRow]="role" [pSelectableRowIndex]="rowIndex" >
-      <td>{{ role.id }}</td>
       <td>{{ role.name }}</td>
-      <td>{{ role.description }}</td>
+      <td [innerHTML]="role.description"></td>
       <td><p-button icon="pi pi-trash" severity="danger" (onClick)="delete(role)" /><p-button icon="pi pi-pencil" severity="info" (onClick)="edit(role)" /></td>
     </tr>
   </ng-template>
@@ -80,7 +77,7 @@
 </p-table>
 
 
-<p-dialog [(visible)]="createRoleDialog" [style]="{ width: '650px',height:'100%' }" header="Sharacter Details" [modal]="true" (onHide)="hideDialog()">
+<p-dialog [(visible)]="createRoleDialog" [style]="{ width: '650px',height:'100%' }" header="Role Details" [modal]="true" (onHide)="hideDialog()">
   <ng-template #content>
 
     <div class="flex flex-col gap-6">

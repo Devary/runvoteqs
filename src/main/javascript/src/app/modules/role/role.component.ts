@@ -20,9 +20,10 @@ import {Editor} from "primeng/editor";
 import {Toast} from "primeng/toast";
 import {Tag} from "primeng/tag";
 import {RoleService} from "../../service/RoleService";
+import {tablePageSize} from "../../app.config";
 
 @Component({
-  selector: 'app-sharacter',
+  selector: 'app-role',
   standalone: true,
   imports: [
     TableModule,
@@ -155,4 +156,5 @@ export class RoleComponent implements OnInit,OnDestroy{
     });
   }
 
+  protected readonly tablePageSize = tablePageSize;
 }

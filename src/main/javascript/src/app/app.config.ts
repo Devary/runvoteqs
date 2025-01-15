@@ -20,3 +20,5 @@ export const appConfig: ApplicationConfig = {
     RoleService,
     GlobalService]
 };
+
+export const tablePageSize: number = 7;

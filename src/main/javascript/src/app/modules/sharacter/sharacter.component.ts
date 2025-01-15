@@ -21,6 +21,7 @@ import {Editor} from "primeng/editor";
 import {Toast} from "primeng/toast";
 import {Tag} from "primeng/tag";
 import {RoleService} from "../../service/RoleService";
+import {tablePageSize} from "../../app.config";
 
 @Component({
   selector: 'app-sharacter',
@@ -172,4 +173,6 @@ export class SharacterComponent implements OnInit,OnDestroy{
       .pipe(takeUntilDestroyed(), retry(3))
       .subscribe(data => console.log('File uploaded successfully'));
   }
+
+  protected readonly tablePageSize = tablePageSize;
 }
