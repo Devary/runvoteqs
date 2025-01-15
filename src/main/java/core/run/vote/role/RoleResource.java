@@ -3,6 +3,7 @@ package core.run.vote.role;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Uni;
+import jakarta.persistence.PersistenceException;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import org.jboss.logging.Logger;

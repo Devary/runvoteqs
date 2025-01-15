@@ -21,6 +21,7 @@ import {Toast} from "primeng/toast";
 import {Tag} from "primeng/tag";
 import {RoleService} from "../../service/RoleService";
 import {tablePageSize} from "../../app.config";
+import {log} from "@angular-devkit/build-angular/src/builders/ssr-dev-server";
 
 @Component({
   selector: 'app-role',
@@ -62,7 +63,7 @@ export class RoleComponent implements OnInit,OnDestroy{
   selectedRoles!: SharacterRole[];
   roles= signal<SharacterRole[]> ([]);
   loading: boolean = true;
-
+  protected readonly tablePageSize = tablePageSize;
 
   //icons
   protected readonly faCoffee = faCoffee;
@@ -140,21 +141,32 @@ export class RoleComponent implements OnInit,OnDestroy{
       acceptButtonStyleClass:"danger",
       accept: () => {
         this.selectedRoles.forEach(sc => {
-          this.roleService.delete(sc.id).subscribe( data =>
+          this.roleService.delete(sc.id).subscribe( res =>
             this.messageService.add({
               severity: 'success',
               summary: 'Successful',
               detail: 'Character Deleted',
               life: 3000
-            })
+            }),
+            err=>{
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Character could not be Deleted',
+                life: 3000
+              })
+            },
+            () => console.log("Deleted successfully")
           )
         })
         this.roles.set(this.roles().filter((val) => !this.selectedRoles?.includes(val)));
         this.selectedRoles = [];
 
+      },
+      reject: () => {
+        this.hideDialog()
       }
     });
   }
 
-  protected readonly tablePageSize = tablePageSize;
 }

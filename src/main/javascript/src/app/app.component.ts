@@ -12,15 +12,7 @@ import Aura from "@primeng/themes/aura"
 })
 export class AppComponent {
   title = 'Run vote [Anime]';
-  constructor(private primeng: PrimeNG) {
-    //this.primeng.theme.set({
-    //  preset: Aura,
-    //  options: {
-    //    cssLayer: {
-    //      name: 'primeng',
-    //      order: 'tailwind-base, primeng, tailwind-utilities'
-    //    }
-    //  }
-    //})
+  constructor() {
+
   }
 }

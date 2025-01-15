@@ -1,15 +1,14 @@
 import {Routes} from '@angular/router';
-import {SharacterComponent} from "./modules/sharacter/sharacter.component";
-import {Empty} from "./pages/empty/empty";
-import {Notfound} from "./pages/notfound/notfound";
-import {RoleComponent} from "./modules/role/role.component";
 import {DashboardComponent} from "./modules/dashboard/dashboard.component";
+import {AppLayout} from "./layout/component/app.layout";
 
 export const routes: Routes = [
-  {path: "sharacter", component: SharacterComponent},
-  {path: "role", component: RoleComponent},
-  {path: 'dashboard', component: DashboardComponent},
-  {path: 'empty', component: Empty},
-  {path: 'notfound', component: Notfound },
-  {path: '**', redirectTo: '/notfound'}
+  {
+    path: '',
+    component: AppLayout,
+    children: [
+      { path: 'modules', component: DashboardComponent },
+      { path: 'modules', loadChildren: () => import('./modules/modules.routes') }
+    ]
+  }
 ];

@@ -7,12 +7,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
 
 import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
+@SoftDelete(strategy = SoftDeleteType.DELETED,columnName = "isDeleted")
 public class Role extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
