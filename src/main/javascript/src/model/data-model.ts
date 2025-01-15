@@ -32,6 +32,12 @@ export class Sharacter implements TreeNode{
 
 }
 export interface SharacterRole {
-  name: string;
   id : string;
+  name: string;
+  description: string;
+}
+export class SharacterRoleImpl {
+  id = "";
+  name= "";
+  description = "";
 }

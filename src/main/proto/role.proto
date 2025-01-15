@@ -1,0 +1,31 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+
+option java_multiple_files =  true;
+option java_package = "core.run.vote";
+
+package role;
+
+
+message RoleRequest {
+  optional string id = 1;
+}
+
+message RoleResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message RoleForm {
+  string name = 2;
+  string description = 3;
+  string role=4;
+}
+
+service RoleService {
+  rpc findAll(google.protobuf.Empty) returns (stream RoleResponse);
+  rpc findOne(RoleRequest) returns (RoleResponse);
+  rpc findMany(stream RoleRequest) returns (stream RoleResponse);
+}

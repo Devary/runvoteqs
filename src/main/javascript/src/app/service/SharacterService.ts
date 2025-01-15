@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {SharacterData, SharacterRole} from "../model/data-model";
+import {SharacterData, SharacterRole} from "../../model/data-model";
 import {GlobalService} from "./GlobalService"
 import {Observable} from "rxjs";
 
@@ -9,6 +9,7 @@ export class SharacterService{
 
   INITIAL: string = "/sharacters";
   URI : string;
+  UPLOAD_URL: string = this.service.buildURI()+"/v1/upload";
 
   constructor(private service : GlobalService) {
     this.URI = service.buildURI()+this.INITIAL;
@@ -35,4 +36,7 @@ export class SharacterService{
     return this.service.getClient().get<SharacterRole[]>(this.URI+"/roles");
   }
 
+  uploadImage(formData: FormData) : Observable<any> {
+    return this.service.getClient().post<any>(this.service.buildURI()+"/upload",formData);
+  }
 }

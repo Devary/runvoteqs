@@ -1,4 +1,4 @@
-package core.run.vote.sharacter;
+package core.run.vote.role;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jakarta.persistence.Entity;
@@ -18,4 +18,5 @@ public class Role extends PanacheEntityBase {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
+    private String description;
 }

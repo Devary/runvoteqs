@@ -1,8 +1,7 @@
 import {Component, DestroyRef, OnDestroy, OnInit, signal, ViewChild} from '@angular/core';
 import {Table, TableModule} from "primeng/table";
-import {SharacterService} from "../../service/SharacterService";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {SharacterData, SharacterDataImpl, SharacterRole} from "../../../model/data-model";
+import {SharacterRole, SharacterRoleImpl} from "../../../model/data-model";
 import {Button} from "primeng/button";
 import {MultiSelectModule} from "primeng/multiselect";
 import {DropdownModule} from "primeng/dropdown";
@@ -11,7 +10,7 @@ import {Toolbar} from "primeng/toolbar";
 import {Dialog} from "primeng/dialog";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faCoffee} from "@fortawesome/free-solid-svg-icons";
-import {BehaviorSubject, retry} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {NgForOf, NgStyle} from "@angular/common";
 import {ConfirmationService, MessageService} from "primeng/api";
@@ -44,25 +43,23 @@ import {RoleService} from "../../service/RoleService";
     NgStyle,
     Tag,
   ],
-  templateUrl: './sharacter.component.html',
-  styleUrl: './sharacter.component.scss',
+  templateUrl: './role.component.html',
+  styleUrl: './role.component.scss',
   outputs: ['message','visibleConfirmation'],
   providers: [ConfirmationService, MessageService]
 })
-export class SharacterComponent implements OnInit,OnDestroy{
+export class RoleComponent implements OnInit,OnDestroy{
 
   //views
   @ViewChild('dt') dt!: Table;
 
   //variables
-  protected createSharacterDialog: boolean = false;
+  protected createRoleDialog: boolean = false;
   protected isEdit = false;
   protected isCreate = false;
-  sharacters = signal<SharacterData[]>([])
-  sharacter: SharacterData= new SharacterDataImpl();
-  selectedShars!: SharacterData[];
+  role!: SharacterRole;
+  selectedRoles!: SharacterRole[];
   roles= signal<SharacterRole[]> ([]);
-  _roles: any = {};
   loading: boolean = true;
 
 
@@ -72,17 +69,12 @@ export class SharacterComponent implements OnInit,OnDestroy{
   //behavior
   destroyed = new BehaviorSubject(null)
 
-  constructor(protected sharacterService: SharacterService,private roleService:RoleService,private destroyRef : DestroyRef, private confirmationService: ConfirmationService, private messageService: MessageService) {
-    this.sharacterService.getAll().subscribe( data => this.sharacters.set(data));
+  constructor(protected roleService: RoleService,
+              private destroyRef : DestroyRef,
+              private confirmationService: ConfirmationService,
+              private messageService: MessageService) {
+    this.roleService.getAll().subscribe( data => this.roles.set(data));
     this.loading= false;
-    this.initRoles();
-  }
-
-  initRoles() {
-    this.roleService.getAll().subscribe( data => {
-      this.roles.set(data);
-      this._roles = data;
-    });
   }
 
   ngOnInit(): void {
@@ -93,44 +85,44 @@ export class SharacterComponent implements OnInit,OnDestroy{
     this.destroyed.complete();
   }
 
-  delete(sharacter :SharacterData) {
-    this.selectedShars=[];
-    this.selectedShars.push(sharacter);
+  delete(sharacter :SharacterRole) {
+    this.selectedRoles=[];
+    this.selectedRoles.push(sharacter);
     this.deleteSelectedSharacters();
   }
 
   openNew() {
-    this.sharacter = new SharacterDataImpl();
-    this.createSharacterDialog = true;
+    this.role = new SharacterRoleImpl();
+    this.createRoleDialog = true;
     this.isCreate = true;
   }
 
   hideDialog() {
-    this.createSharacterDialog = false;
+    this.createRoleDialog = false;
     this.isEdit = false;
     this.isCreate = false;
-    this.sharacter = new SharacterDataImpl();
+    this.role = new SharacterRoleImpl() ;
   }
 
   exportCSV() {
     this.dt.exportCSV();
   }
 
-  edit(sharacter:SharacterData) {
-    this.sharacter = sharacter;
-    this.createSharacterDialog = true;
+  edit(role:SharacterRole) {
+    this.role = role;
+    this.createRoleDialog = true;
     this.isEdit = true;
   }
 
   processEntity() {
     if(this.isEdit){
-      this.sharacterService.update(this.sharacter).subscribe();
+      this.roleService.update(this.role).subscribe();
       this.isEdit = false;
     }else if(this.isCreate){
-      let _sharacters = this.sharacters();
-      this.sharacterService.create(this.sharacter)
+      let _roles = this.roles();
+      this.roleService.create(this.role)
         .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(data => this.sharacters.set([..._sharacters, data]));
+        .subscribe(data => this.roles.set([..._roles, data]));
       this.isCreate = false;
     }
     this.hideDialog();
@@ -138,16 +130,16 @@ export class SharacterComponent implements OnInit,OnDestroy{
 
   deleteSelectedSharacters() {
     this.confirmationService.confirm({
-      message: this.selectedShars.length>1?'Are you sure you want to delete the selected ('+this.selectedShars.length+') sharacters?':
-        'Are you sure you want to delete the selected ('+this.selectedShars.length+') sharacter?',
+      message: this.selectedRoles.length>1?'Are you sure you want to delete the selected ('+this.selectedRoles.length+') roles?':
+        'Are you sure you want to delete the selected ('+this.selectedRoles.length+') role?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel:"Yes delete",
       acceptIcon:"pi pi-trash",
       acceptButtonStyleClass:"danger",
       accept: () => {
-        this.selectedShars.forEach(sc => {
-          this.sharacterService.delete(sc.id).subscribe( data =>
+        this.selectedRoles.forEach(sc => {
+          this.roleService.delete(sc.id).subscribe( data =>
             this.messageService.add({
               severity: 'success',
               summary: 'Successful',
@@ -156,20 +148,11 @@ export class SharacterComponent implements OnInit,OnDestroy{
             })
           )
         })
-        this.sharacters.set(this.sharacters().filter((val) => !this.selectedShars?.includes(val)));
-        this.selectedShars = [];
+        this.roles.set(this.roles().filter((val) => !this.selectedRoles?.includes(val)));
+        this.selectedRoles = [];
 
       }
     });
   }
 
-  uploadFile(event: any) {
-    console.log('upload file', event);
-    const file = event.target.files[0];
-    const formData = new FormData();
-    formData.append('file', file);
-    this.sharacterService.uploadImage(formData)
-      .pipe(takeUntilDestroyed(), retry(3))
-      .subscribe(data => console.log('File uploaded successfully'));
-  }
 }

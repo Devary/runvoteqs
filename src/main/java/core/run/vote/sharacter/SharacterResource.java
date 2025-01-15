@@ -7,7 +7,7 @@ import static jakarta.ws.rs.core.Response.Status.NO_CONTENT;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.inject.Inject;
+import core.run.vote.role.Role;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
@@ -71,11 +71,4 @@ public class SharacterResource {
                         ? Response.ok().status(NO_CONTENT).build()
                         : Response.ok().status(NOT_FOUND).build());
     }
-
-    @GET
-    @Path("/roles")
-    public Uni<List<Sharacter>> getRoles() {
-        return Role.listAll(Sort.by("name"));
-    }
-
 }
