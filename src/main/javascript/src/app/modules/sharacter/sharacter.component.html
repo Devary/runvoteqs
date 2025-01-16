@@ -79,7 +79,7 @@
     <tr [pSelectableRow]="sharacter" [pSelectableRowIndex]="rowIndex" >
       <td>{{ sharacter.name }}</td>
       <td [innerHtml]="sharacter.description"></td>
-      <td><label *ngFor="let role of sharacter.role">
+      <td><label *ngFor="let role of sharacter.roles">
         {{ role.name }}
       </label></td>
       <td><p-button icon="pi pi-trash" severity="danger" (onClick)="delete(sharacter)" /><p-button icon="pi pi-pencil" severity="info" (onClick)="edit(sharacter)" /></td>
@@ -116,7 +116,7 @@
         </div>
       <div>
         <label for="role" class="block font-bold mb-3">Role*</label>
-        <p-multiselect [options]="roles()" optionLabel="name" placeholder="Select Roles" [(ngModel)]="sharacter.role" [maxSelectedLabels]="3" styleClass="w-full md:w-80"  id="role"  ></p-multiselect>
+        <p-multiselect [options]="roles()" optionLabel="name" placeholder="Select Roles" [(ngModel)]="sharacter.roles" [maxSelectedLabels]="3" styleClass="w-full md:w-80" id="role"  ></p-multiselect>
         <p-button label="Refresh Roles" icon="pi pi-refresh" text (onClick)="initRoles()" />
       </div>
       <div>

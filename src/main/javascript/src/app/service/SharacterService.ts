@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {SharacterData, SharacterRole} from "../../model/data-model";
-import {GlobalService} from "./GlobalService"
+import {WebClientService} from "./web-client.service"
 import {Observable} from "rxjs";
 
 
@@ -11,7 +11,7 @@ export class SharacterService{
   URI : string;
   UPLOAD_URL: string = this.service.buildURI()+"/v1/upload";
 
-  constructor(private service : GlobalService) {
+  constructor(private service : WebClientService) {
     this.URI = service.buildURI()+this.INITIAL;
   }
 

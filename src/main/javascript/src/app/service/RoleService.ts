@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {SharacterData, SharacterRole} from "../../model/data-model";
-import {GlobalService} from "./GlobalService"
+import {WebClientService} from "./web-client.service"
 import {Observable} from "rxjs";
 
 
@@ -10,7 +10,7 @@ export class RoleService{
   INITIAL: string = "/roles";
   URI : string;
 
-  constructor(private service : GlobalService) {
+  constructor(private service : WebClientService) {
     this.URI = service.buildURI()+this.INITIAL;
   }
 

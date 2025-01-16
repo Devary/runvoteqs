@@ -10,18 +10,18 @@ import {Toolbar} from "primeng/toolbar";
 import {Dialog} from "primeng/dialog";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faCoffee} from "@fortawesome/free-solid-svg-icons";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, catchError, EMPTY} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
-import {NgForOf, NgStyle} from "@angular/common";
+import {NgStyle} from "@angular/common";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ConfirmDialog} from "primeng/confirmdialog";
-import {FileUpload} from "primeng/fileupload";
 import {Editor} from "primeng/editor";
 import {Toast} from "primeng/toast";
-import {Tag} from "primeng/tag";
 import {RoleService} from "../../service/RoleService";
 import {tablePageSize} from "../../app.config";
-import {log} from "@angular-devkit/build-angular/src/builders/ssr-dev-server";
+import {MessageTemplateService} from "../../service/MessageTemplateService";
+import {EntityRegistry} from "../../service/annotations/entity-registry";
+import {MessageAction} from "../../service/annotations/message-action";
 
 @Component({
   selector: 'app-role',
@@ -37,13 +37,10 @@ import {log} from "@angular-devkit/build-angular/src/builders/ssr-dev-server";
     Dialog,
     FaIconComponent,
     ReactiveFormsModule,
-    NgForOf,
     ConfirmDialog,
-    FileUpload,
     Editor,
     Toast,
     NgStyle,
-    Tag,
   ],
   templateUrl: './role.component.html',
   styleUrl: './role.component.scss',
@@ -63,6 +60,8 @@ export class RoleComponent implements OnInit,OnDestroy{
   selectedRoles!: SharacterRole[];
   roles= signal<SharacterRole[]> ([]);
   loading: boolean = true;
+  tuple : [EntityRegistry,MessageAction];
+
   protected readonly tablePageSize = tablePageSize;
 
   //icons
@@ -74,9 +73,11 @@ export class RoleComponent implements OnInit,OnDestroy{
   constructor(protected roleService: RoleService,
               private destroyRef : DestroyRef,
               private confirmationService: ConfirmationService,
-              private messageService: MessageService) {
+              private messageService: MessageService,
+              private messageTemplate: MessageTemplateService) {
     this.roleService.getAll().subscribe( data => this.roles.set(data));
     this.loading= false;
+    this.tuple = [EntityRegistry.ROLE,MessageAction.DELETED];
   }
 
   ngOnInit(): void {
@@ -118,13 +119,22 @@ export class RoleComponent implements OnInit,OnDestroy{
 
   processEntity() {
     if(this.isEdit){
-      this.roleService.update(this.role).subscribe();
+      this.tuple[1] = MessageAction.SAVED;
+      this.roleService.update(this.role).pipe(catchError((err) => {
+        this.messageService.add(this.messageTemplate.generateError(this.tuple,err.statusText))
+        return EMPTY;
+      })).subscribe(res => this.messageService.add(this.messageTemplate.generateSuccess(this.tuple)));
       this.isEdit = false;
     }else if(this.isCreate){
+      this.tuple[1] = MessageAction.CREATED;
       let _roles = this.roles();
       this.roleService.create(this.role)
         .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(data => this.roles.set([..._roles, data]));
+        .pipe(catchError((err) => {
+          this.messageService.add(this.messageTemplate.generateError(this.tuple,err.statusText))
+          return EMPTY;
+        })).subscribe(res => {this.roles.set([..._roles, res]);
+          this.messageService.add(this.messageTemplate.generateSuccess(this.tuple))});
       this.isCreate = false;
     }
     this.hideDialog();
@@ -141,27 +151,17 @@ export class RoleComponent implements OnInit,OnDestroy{
       acceptButtonStyleClass:"danger",
       accept: () => {
         this.selectedRoles.forEach(sc => {
-          this.roleService.delete(sc.id).subscribe( res =>
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Successful',
-              detail: 'Character Deleted',
-              life: 3000
-            }),
-            err=>{
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Character could not be Deleted',
-                life: 3000
-              })
-            },
-            () => console.log("Deleted successfully")
-          )
+          this.roleService
+            .delete(sc.id)
+            .pipe(catchError((err) => {
+              this.tuple[1] = MessageAction.DELETED;
+            this.messageService.add(this.messageTemplate.generateError(this.tuple,err.statusText))
+            return EMPTY;
+            }))
+            .subscribe( res => this.messageService.add(this.messageTemplate.generateSuccess(this.tuple)))
         })
         this.roles.set(this.roles().filter((val) => !this.selectedRoles?.includes(val)));
         this.selectedRoles = [];
-
       },
       reject: () => {
         this.hideDialog()

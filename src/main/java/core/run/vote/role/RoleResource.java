@@ -1,5 +1,6 @@
 package core.run.vote.role;
 
+import core.run.vote.sharacter.Sharacter;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Uni;
@@ -67,11 +68,4 @@ public class RoleResource {
                         ? Response.ok().status(NO_CONTENT).build()
                         : Response.ok().status(NOT_FOUND).build());
     }
-
-    @GET
-    @Path("/roles")
-    public Uni<List<Role>> getRoles() {
-        return Role.listAll(Sort.by("name"));
-    }
-
 }

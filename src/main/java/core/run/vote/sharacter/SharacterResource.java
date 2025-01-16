@@ -6,8 +6,6 @@ import static jakarta.ws.rs.core.Response.Status.NO_CONTENT;
 
 import java.util.List;
 import java.util.UUID;
-
-import core.run.vote.role.Role;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
@@ -25,7 +23,8 @@ public class SharacterResource {
 
     @GET
     public Uni<List<Sharacter>> get() {
-        return Sharacter.listAll(Sort.by("name"));
+        return Sharacter.findAll(Sort.by("name"))
+                .list();
     }
 
     @GET
@@ -56,8 +55,8 @@ public class SharacterResource {
                         .onItem().ifNotNull().invoke(entity -> {
                             entity.setName(sharacter.getName());
                             entity.setDescription(sharacter.getDescription());
-                            entity.setRole(sharacter.getRole());
-                        } )
+                            entity.setRoles(sharacter.getRoles());
+                            })
                 )
                 .onItem().ifNotNull().transform(entity -> Response.ok(entity).build())
                 .onItem().ifNull().continueWith(Response.ok().status(NOT_FOUND)::build);

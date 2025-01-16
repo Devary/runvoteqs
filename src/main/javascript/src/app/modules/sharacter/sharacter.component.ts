@@ -11,7 +11,7 @@ import {Toolbar} from "primeng/toolbar";
 import {Dialog} from "primeng/dialog";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faCoffee} from "@fortawesome/free-solid-svg-icons";
-import {BehaviorSubject, retry} from "rxjs";
+import {BehaviorSubject, catchError, EMPTY, retry} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {NgForOf, NgStyle} from "@angular/common";
 import {ConfirmationService, MessageService} from "primeng/api";
@@ -22,6 +22,9 @@ import {Toast} from "primeng/toast";
 import {Tag} from "primeng/tag";
 import {RoleService} from "../../service/RoleService";
 import {tablePageSize} from "../../app.config";
+import {EntityRegistry} from "../../service/annotations/entity-registry";
+import {MessageAction} from "../../service/annotations/message-action";
+import {MessageTemplateService} from "../../service/MessageTemplateService";
 
 @Component({
   selector: 'app-sharacter',
@@ -65,7 +68,7 @@ export class SharacterComponent implements OnInit,OnDestroy{
   roles= signal<SharacterRole[]> ([]);
   _roles: any = {};
   loading: boolean = true;
-
+  tuple : [EntityRegistry,MessageAction];
 
   //icons
   protected readonly faCoffee = faCoffee;
@@ -73,10 +76,16 @@ export class SharacterComponent implements OnInit,OnDestroy{
   //behavior
   destroyed = new BehaviorSubject(null)
 
-  constructor(protected sharacterService: SharacterService,private roleService:RoleService,private destroyRef : DestroyRef, private confirmationService: ConfirmationService, private messageService: MessageService) {
+  constructor(protected sharacterService: SharacterService,
+              private roleService:RoleService,
+              private destroyRef : DestroyRef,
+              private confirmationService: ConfirmationService,
+              private messageTemplate: MessageTemplateService,
+              private messageService: MessageService) {
     this.sharacterService.getAll().subscribe( data => this.sharacters.set(data));
     this.loading= false;
     this.initRoles();
+    this.tuple = [EntityRegistry.SHARACTER,MessageAction.DELETED];
   }
 
   initRoles() {
@@ -125,13 +134,23 @@ export class SharacterComponent implements OnInit,OnDestroy{
 
   processEntity() {
     if(this.isEdit){
-      this.sharacterService.update(this.sharacter).subscribe();
+      this.tuple[1] = MessageAction.SAVED;
+      this.sharacterService.update(this.sharacter).pipe(catchError((err) => {
+        this.messageService.add(this.messageTemplate.generateError(this.tuple,err.statusText))
+        return EMPTY;
+      }))
+        .subscribe(res => this.messageService.add(this.messageTemplate.generateSuccess(this.tuple)));;
       this.isEdit = false;
     }else if(this.isCreate){
+      this.tuple[1] = MessageAction.CREATED;
       let _sharacters = this.sharacters();
       this.sharacterService.create(this.sharacter)
         .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(data => this.sharacters.set([..._sharacters, data]));
+        .pipe(catchError((err) => {
+          this.messageService.add(this.messageTemplate.generateError(this.tuple,err.statusText))
+          return EMPTY;
+        })).subscribe(res => {this.sharacters.set([..._sharacters, res]);
+        this.messageService.add(this.messageTemplate.generateSuccess(this.tuple))});
       this.isCreate = false;
     }
     this.hideDialog();
@@ -148,18 +167,17 @@ export class SharacterComponent implements OnInit,OnDestroy{
       acceptButtonStyleClass:"danger",
       accept: () => {
         this.selectedShars.forEach(sc => {
-          this.sharacterService.delete(sc.id).subscribe( data =>
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Successful',
-              detail: 'Character Deleted',
-              life: 3000
-            })
-          )
+          this.sharacterService.delete(sc.id).pipe(catchError((err) => {
+            this.messageService.add(this.messageTemplate.generateError(this.tuple,err.statusText))
+            return EMPTY;
+          })).subscribe( res => this.messageService.add(this.messageTemplate.generateSuccess(this.tuple)))
         })
         this.sharacters.set(this.sharacters().filter((val) => !this.selectedShars?.includes(val)));
         this.selectedShars = [];
 
+      },
+      reject: () => {
+        this.hideDialog()
       }
     });
   }

@@ -12,14 +12,14 @@ export interface SharacterData {
     id:string;
     name:string;
     description:string;
-    role:SharacterRole[];
+    roles:SharacterRole[];
 }
 
 export class SharacterDataImpl{
   id= "";
   name= "";
   description= "";
-  role:SharacterRole[]= [];
+  roles:SharacterRole[]= [];
 }
 
 export class Sharacter implements TreeNode{
