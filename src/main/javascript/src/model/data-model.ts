@@ -44,3 +44,9 @@ export class SharacterRoleImpl {
   test = "";
   meta = new Map<string,any>();
 }
+export class AnimeData{
+  id= "";
+  name= "";
+  description= "";
+  sharacters:SharacterDataImpl[]= [];
+}

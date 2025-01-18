@@ -21,10 +21,12 @@ import {TableFieldType} from "../../context/models/TableFieldType";
 export class ParentDtComponent {
   roleContext!:EntityContext;
   sharacterContext!:EntityContext;
+  animeContext!: EntityContext;
 
   constructor(){
     this.generateRoleContext();
     this.generateSharacterContext();
+    this.generateAnimeContext();
   }
 
   private generateSharacterContext(){
@@ -48,7 +50,25 @@ export class ParentDtComponent {
   }
 
 
-
+  private generateAnimeContext(){
+    //init fields
+    let _fields:TableField[]=[];
+    var name : TableField= new TableField("name",TableFieldType.INPUT_TEXT);
+    var description : TableField= new TableField("description",TableFieldType.TEXT_EDITOR,);
+    var roles : TableField= new TableField("sharacters",TableFieldType.MULTI_SELECT,"sharacter");
+    _fields.push(name,description,roles)
+    //init component
+    var init ={
+      name: "anime",
+      fields: _fields,
+      allowActions: true,
+      allowedActions: [],
+      allowExportAction: true,
+      disabledActions: [],
+      disableFields: ['id']
+    }
+    this.animeContext= new EntityContext(init);
+  }
 
 
 

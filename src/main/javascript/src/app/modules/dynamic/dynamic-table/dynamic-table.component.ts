@@ -21,7 +21,7 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faCoffee} from "@fortawesome/free-solid-svg-icons";
 import {BehaviorSubject, catchError, EMPTY} from "rxjs";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
-import {NgForOf, NgIf, NgStyle, TitleCasePipe} from "@angular/common";
+import {NgForOf, NgIf, TitleCasePipe} from "@angular/common";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ConfirmDialog} from "primeng/confirmdialog";
 import {Editor} from "primeng/editor";
@@ -34,7 +34,6 @@ import {MessageAction} from "../../../service/annotations/message-action";
 import {ContextService} from "../../../service/ContextService";
 import {EntityContext} from "../../../context/EntityContext";
 import {TableField} from "../../../context/models/TableField";
-import {TableFieldType} from "../../../context/models/TableFieldType";
 import {Tag} from "primeng/tag";
 
 
@@ -55,7 +54,6 @@ import {Tag} from "primeng/tag";
     ConfirmDialog,
     Editor,
     Toast,
-    NgStyle,
     NgIf,
     NgForOf,
     Tag,
@@ -92,7 +90,7 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
 
   context = input<EntityContext>(this.defaultInitContext);
   protected readonly tablePageSize = tablePageSize;
-
+  service:any;
   //icons
   protected readonly faCoffee = faCoffee;
 
@@ -101,8 +99,7 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
   fieldsToShow: TableField[] = [];
   fieldsToShowStrings: string[]=[];
 
-  constructor(protected service: RoleService,
-              private destroyRef : DestroyRef,
+  constructor(private destroyRef : DestroyRef,
               private confirmationService: ConfirmationService,
               private messageService: MessageService,
               private messageTemplate: MessageTemplateService,
@@ -122,8 +119,11 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
     }});
   }
   ngAfterViewInit(): void {
+    //init service
+    this.service = this.contextService.getTableContextFor(this.context()?.name).service;
     this.tuple = [EntityRegistry.getByName(this.context()?.name),EMPTY];
-    this.contextService.getTableContextFor(this.context()?.name).service.getAll().subscribe((data: any[]) => this.objects.set(data));
+    console.log(this.context()?.name)
+    this.service.getAll().subscribe((data: any[]) => this.objects.set(data));
     this.generateFieldsToShow();
     this.fieldsToShow.map(field => {
       if (field.isMultiSelect){
@@ -131,7 +131,6 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
         this.contextService.getTableContextFor(field.listType).service.getAll().subscribe(data =>field.setListObjects(data))
       }
     })
-
 
 
     this.loading = false;
@@ -177,7 +176,8 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
       this.service.update(this.object).pipe(catchError((err) => {
         this.messageService.add(this.messageTemplate.generateError(this.tuple,err.statusText))
         return EMPTY;
-      })).subscribe(res => this.messageService.add(this.messageTemplate.generateSuccess(this.tuple)));
+      }))
+        .subscribe(res => this.messageService.add(this.messageTemplate.generateSuccess(this.tuple)));
       this.isEdit = false;
     }else if(this.isCreate){
       this.changeActionTransition(MessageAction.CREATED);

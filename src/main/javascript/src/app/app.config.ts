@@ -11,6 +11,7 @@ import {RoleService} from "./service/RoleService";
 import {MessageTemplateService} from "./service/MessageTemplateService";
 import {MessageService} from "primeng/api";
 import {ContextService} from "./service/ContextService";
+import {AnimeService} from "./service/AnimeService";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,6 +21,7 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({ theme: { preset: Aura, options: { darkModeSelector: '.app-dark' } } }),
     SharacterService,
     RoleService,
+    AnimeService,
     MessageTemplateService,
     MessageService,
     WebClientService,
