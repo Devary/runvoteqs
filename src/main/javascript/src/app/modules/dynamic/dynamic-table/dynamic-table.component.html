@@ -55,13 +55,14 @@
 
     <tr [pSelectableRow]="obj" [pSelectableRowIndex]="rowIndex" >
       <td *ngFor="let field of fieldsToShow">
-        <div *ngIf="field.type ==='multiSelect'">
+        <div *ngIf="field.isMultiSelect">
           <p *ngFor="let val of obj[field.name]">
             <p-tag severity="warn" icon="pi pi-user" [style]="{color:'black'}" value="{{val.name}}" />
           </p>
         </div>
-        <div *ngIf="field.type !=='multiSelect'">
-          {{ obj[field.name] }}
+        <div *ngIf="!field.isMultiSelect">
+          <p *ngIf="field.isTextEditor" [innerHTML]="obj[field.name]"></p>
+          <p *ngIf="!field.isTextEditor">{{obj[field.name]}}</p>
         </div>
       </td>
       <td *ngIf="this.context().allowActions"><p-button icon="pi pi-trash" severity="danger" (onClick)="delete(obj)" /><p-button icon="pi pi-pencil" severity="info" (onClick)="edit(obj)" /></td>

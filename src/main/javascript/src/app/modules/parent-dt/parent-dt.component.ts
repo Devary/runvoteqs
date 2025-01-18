@@ -51,13 +51,11 @@ export class ParentDtComponent {
 
 
   private generateAnimeContext(){
-    //init fields
     let _fields:TableField[]=[];
     var name : TableField= new TableField("name",TableFieldType.INPUT_TEXT);
     var description : TableField= new TableField("description",TableFieldType.TEXT_EDITOR,);
     var roles : TableField= new TableField("sharacters",TableFieldType.MULTI_SELECT,"sharacter");
     _fields.push(name,description,roles)
-    //init component
     var init ={
       name: "anime",
       fields: _fields,
@@ -75,13 +73,18 @@ export class ParentDtComponent {
 
   private generateRoleContext(){
     let _fields:TableField[]=[];
-    //let role!:SharacterRole;
-    //for(var i in role){
-    //  _fields.push(new TableField(i))
-    //}
-    //let editor = new EditorModule()
-    //let disabledFields:TableField[]=[];
-    //disabledFields.push('id')
-    //this.roleContext= new EntityContext("role",_fields,true,[],true,[],disabledFields);
+    var name : TableField= new TableField("name",TableFieldType.INPUT_TEXT);
+    var description : TableField= new TableField("description",TableFieldType.TEXT_EDITOR,);
+    _fields.push(name,description)
+    var init ={
+      name: "role",
+      fields: _fields,
+      allowActions: true,
+      allowedActions: [],
+      allowExportAction: true,
+      disabledActions: [],
+      disableFields: ['id']
+    }
+    this.roleContext= new EntityContext(init);
   }
 }
