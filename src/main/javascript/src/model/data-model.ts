@@ -35,9 +35,12 @@ export interface SharacterRole {
   id : string;
   name: string;
   description: string;
+  meta: Map<string,any>;
 }
 export class SharacterRoleImpl {
   id = "";
   name= "";
   description = "";
+  test = "";
+  meta = new Map<string,any>();
 }

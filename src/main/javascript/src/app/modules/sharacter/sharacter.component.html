@@ -22,7 +22,7 @@
   [showCurrentPageReport]="true"
   [loading]="loading"
   [rowHover]="true"
-  [globalFilterFields]="['name','description','role']"
+  [globalFilterFields]="['name','description','roles']"
   [(selection)]="selectedShars"
   [contextMenu]="true"
   contextMenuSelectionMode="separate"
@@ -32,12 +32,10 @@
 
   <ng-template pTemplate="header">
     <tr>
-      <th>
-        <div class="flex justify-content-center align-items-center">Name</div>
-      </th>
-      <th >Description</th>
-      <th >Role</th>
-      <th >Action</th>
+      <th><div class="flex justify-content-center align-items-center">Name</div></th>
+      <th>Description</th>
+      <th>Roles</th>
+      <th>Action</th>
     </tr>
     <tr>
       <th>
@@ -58,18 +56,6 @@
         ></p-columnFilter>
       </th>
       <th style="min-width:10rem">
-        <div class="flex items-center">
-          Roles
-          <p-columnFilter field="role" matchMode="equals" display="menu">
-            <ng-template #filter let-role let-filter="filterCallback">
-              <p-dropdown  [options]="roles()" placeholder="Any">
-                <ng-template let-option #item>
-                  <p-tag [value]="option.name" [id]="option.id" severity="danger" />
-                </ng-template>
-              </p-dropdown>
-            </ng-template>
-          </p-columnFilter>
-        </div>
       </th>
       <th></th>
     </tr>
@@ -80,7 +66,7 @@
       <td>{{ sharacter.name }}</td>
       <td [innerHtml]="sharacter.description"></td>
       <td><label *ngFor="let role of sharacter.roles">
-        {{ role.name }}
+        <p-tag severity="warn" icon="pi pi-user" [style]="{color:'black'}" value="{{ role.name }}" />
       </label></td>
       <td><p-button icon="pi pi-trash" severity="danger" (onClick)="delete(sharacter)" /><p-button icon="pi pi-pencil" severity="info" (onClick)="edit(sharacter)" /></td>
     </tr>

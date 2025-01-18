@@ -54,6 +54,7 @@ public class RoleResource {
                         .onItem().ifNotNull().invoke(entity -> {
                             entity.setName(role.getName());
                             entity.setDescription(role.getDescription());
+                            //entity.setMeta(role.getMeta());
                         } )
                 )
                 .onItem().ifNotNull().transform(entity -> Response.ok(entity).build())

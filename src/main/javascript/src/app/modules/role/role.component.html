@@ -98,6 +98,11 @@
             </ng-template>
           </p-editor>
         </div>
+      <div>
+        <label for="tag" class="block font-bold mb-3">Tag*</label>
+        <input type="text" id="tag" pInputText [(ngModel)]="role.name"  autofocus fluid />
+        <p-colorpicker [ngModel]='role.meta.get("classBgColor")'></p-colorpicker>
+      </div>
       </div>
   </ng-template>
 

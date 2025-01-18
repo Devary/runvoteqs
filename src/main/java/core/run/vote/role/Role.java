@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.SoftDelete;
 import org.hibernate.annotations.SoftDeleteType;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Entity
@@ -19,4 +20,6 @@ public class Role extends PanacheEntityBase {
     private UUID id;
     private String name;
     private String description;
+    //@ElementCollection
+    //private Map<String,Object> meta;
 }

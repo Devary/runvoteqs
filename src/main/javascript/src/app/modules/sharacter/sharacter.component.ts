@@ -25,6 +25,7 @@ import {tablePageSize} from "../../app.config";
 import {EntityRegistry} from "../../service/annotations/entity-registry";
 import {MessageAction} from "../../service/annotations/message-action";
 import {MessageTemplateService} from "../../service/MessageTemplateService";
+import {Select} from "primeng/select";
 
 @Component({
   selector: 'app-sharacter',
@@ -66,9 +67,10 @@ export class SharacterComponent implements OnInit,OnDestroy{
   sharacter: SharacterData= new SharacterDataImpl();
   selectedShars!: SharacterData[];
   roles= signal<SharacterRole[]> ([]);
-  _roles: any = {};
+  _roles: any[] = [];
   loading: boolean = true;
   tuple : [EntityRegistry,MessageAction];
+  rolesFilter!: [];
 
   //icons
   protected readonly faCoffee = faCoffee;
@@ -82,20 +84,22 @@ export class SharacterComponent implements OnInit,OnDestroy{
               private confirmationService: ConfirmationService,
               private messageTemplate: MessageTemplateService,
               private messageService: MessageService) {
-    this.sharacterService.getAll().subscribe( data => this.sharacters.set(data));
+    this.sharacterService.getAll().subscribe( data => {
+      this.sharacters.set(data);
+      data.forEach(sh => sh.roles
+        .forEach(role => this._roles.push({label: role.name, value: role.id})));
+    });
     this.loading= false;
     this.initRoles();
     this.tuple = [EntityRegistry.SHARACTER,MessageAction.DELETED];
+  }
+  ngOnInit(): void {
   }
 
   initRoles() {
     this.roleService.getAll().subscribe( data => {
       this.roles.set(data);
-      this._roles = data;
     });
-  }
-
-  ngOnInit(): void {
   }
 
   ngOnDestroy(): void {
@@ -193,4 +197,5 @@ export class SharacterComponent implements OnInit,OnDestroy{
   }
 
   protected readonly tablePageSize = tablePageSize;
+  protected readonly console = console;
 }
