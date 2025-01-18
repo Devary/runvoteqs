@@ -10,6 +10,7 @@ import Aura from "@primeng/themes/aura";
 import {RoleService} from "./service/RoleService";
 import {MessageTemplateService} from "./service/MessageTemplateService";
 import {MessageService} from "primeng/api";
+import {ContextService} from "./service/ContextService";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,7 +22,9 @@ export const appConfig: ApplicationConfig = {
     RoleService,
     MessageTemplateService,
     MessageService,
-    WebClientService]
+    WebClientService,
+    ContextService
+  ]
 };
 
 export const tablePageSize: number = 7;
