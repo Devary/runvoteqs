@@ -20,6 +20,7 @@ export class SharacterDataImpl{
   name= "";
   description= "";
   roles:SharacterRole[]= [];
+  anime:AnimeData= new AnimeData();
 }
 
 export class Sharacter implements TreeNode{

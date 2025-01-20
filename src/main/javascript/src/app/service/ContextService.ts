@@ -3,6 +3,8 @@ import {RoleService} from "./RoleService";
 import {Injectable} from "@angular/core";
 import {SharacterService} from "./SharacterService";
 import {AnimeService} from "./AnimeService";
+import {TableField} from "../context/models/TableField";
+import {TableAction} from "../context/models/TableAction";
 
 
 @Injectable()
@@ -50,5 +52,21 @@ export class ContextService {
 
   get animeTableContext(): TableContext {
     return this._animeTableContext;
+  }
+
+  createContextScheme(name:string,_fields : TableField[],allowActions:boolean,allowedActions:TableAction[],allowExportAction:boolean,disabledActions:string[],disableFields:string[]){
+    this.validateSchema();
+    return {
+      name: name,
+      fields: _fields,
+      allowActions: allowActions,
+      allowedActions: allowedActions,
+      allowExportAction: allowExportAction,
+      disabledActions: disabledActions,
+      disableFields: disableFields
+    };
+  }
+  validateSchema():void{
+    //todo: make all possible validations
   }
 }

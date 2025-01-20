@@ -26,8 +26,8 @@ public class Anime extends PanacheEntityBase {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.REFRESH)
-    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "anime")
+    @Fetch(FetchMode.SELECT)
     private Set<Sharacter> sharacters;
     private String description;
 }

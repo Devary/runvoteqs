@@ -24,4 +24,8 @@ export class TableField {
   public setListObjects(listObjects:any[]){
     this.listObjects = listObjects;
   }
+
+  get isSelect(){
+    return this.type === TableFieldType.SELECT;
+  }
 }

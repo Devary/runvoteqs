@@ -35,6 +35,9 @@ import {ContextService} from "../../../service/ContextService";
 import {EntityContext} from "../../../context/EntityContext";
 import {TableField} from "../../../context/models/TableField";
 import {Tag} from "primeng/tag";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {ObjectListComponent} from "../object-list/object-list.component";
+import {Select} from "primeng/select";
 
 
 @Component({
@@ -58,6 +61,7 @@ import {Tag} from "primeng/tag";
     NgForOf,
     Tag,
     TitleCasePipe,
+    Select,
   ],
   templateUrl: './dynamic-table.component.html',
   styleUrl: './dynamic-table.component.scss',
@@ -88,6 +92,9 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
     disableFields: []
   }
 
+  showMoreDialog: DynamicDialogRef | undefined;
+
+
   context = input<EntityContext>(this.defaultInitContext);
   protected readonly tablePageSize = tablePageSize;
   service:any;
@@ -103,6 +110,7 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
               private confirmationService: ConfirmationService,
               private messageService: MessageService,
               private messageTemplate: MessageTemplateService,
+              public dialogService: DialogService,
               private contextService: ContextService) {
     this.loading= true;
   }
@@ -225,6 +233,18 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
 
   changeActionTransition(action : MessageAction){
     this.tuple[1] = action;
+  }
+
+  showMore(objElement: any) {
+    this.showMoreDialog = this.dialogService.open(ObjectListComponent, {
+      header: 'List of '+this.context().name+'s',
+      //width: '70%',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
+      //maximizable: true,
+      data : objElement,
+      closable:true,
+    });
   }
 }
 

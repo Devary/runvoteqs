@@ -56,9 +56,15 @@
     <tr [pSelectableRow]="obj" [pSelectableRowIndex]="rowIndex" >
       <td *ngFor="let field of fieldsToShow">
         <div *ngIf="field.isMultiSelect">
-          <p *ngFor="let val of obj[field.name]">
-            <p-tag severity="warn" icon="pi pi-user" [style]="{color:'black'}" value="{{val.name}}" />
+          <p *ngIf="obj[field.name].length > 1">
+            <p-tag severity="warn" icon="pi pi-user" [style]="{color:'black'}" value="{{obj[field.name][0].name}}" />
+            <p-button icon="pi pi-list" severity="secondary" (onClick)="showMore(obj[field.name])" />
           </p>
+          <div *ngIf="obj[field.name].length === 1">
+            <p *ngFor="let val of obj[field.name]">
+              <p-tag severity="warn" icon="pi pi-user" [style]="{color:'black'}" value="{{val.name}}" />
+            </p>
+          </div>
         </div>
         <div *ngIf="!field.isMultiSelect">
           <p *ngIf="field.isTextEditor" [innerHTML]="obj[field.name]"></p>
@@ -90,7 +96,12 @@
             <div>
               <label for="{{field.name}}" class="block font-bold mb-3">{{field.name | titlecase}}*</label>
               <p-multiselect [options]="field.listObjects" optionLabel="name" placeholder="Select Roles" [(ngModel)]="object[field.name]" [maxSelectedLabels]="3" styleClass="w-full md:w-80" id="role"  ></p-multiselect>
-              <!--<p-button label="Refresh Roles" icon="pi pi-refresh" text (onClick)="initRoles()" />-->
+            </div>
+          </div>
+          <div *ngIf="field.isSelect">
+            <div>
+              <label for="{{field.name}}" class="block font-bold mb-3">{{field.name | titlecase}}*</label>
+              <p-select [options]="field.listObjects" [(ngModel)]="object[field.name]" optionLabel="name" placeholder="Select an {{field.name}}" class="w-full md:w-56" />
             </div>
           </div>
           <div *ngIf="field.isTextEditor">

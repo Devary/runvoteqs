@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ParentDtComponent } from './parent-dt.component';
+import { ObjectListComponent } from './object-list.component';
 
-describe('ParentDtComponent', () => {
-  let component: ParentDtComponent;
-  let fixture: ComponentFixture<ParentDtComponent>;
+describe('ObjectListComponent', () => {
+  let component: ObjectListComponent;
+  let fixture: ComponentFixture<ObjectListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ParentDtComponent]
+      imports: [ObjectListComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ParentDtComponent);
+    fixture = TestBed.createComponent(ObjectListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

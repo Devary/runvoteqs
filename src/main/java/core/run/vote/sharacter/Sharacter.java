@@ -1,6 +1,7 @@
 package core.run.vote.sharacter;
 
 
+import core.run.vote.anime.Anime;
 import core.run.vote.role.Role;
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jakarta.persistence.*;
@@ -26,7 +27,9 @@ public class Sharacter extends PanacheEntityBase {
     private UUID id;
     private String name;
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.REFRESH)
-    @Fetch(FetchMode.SUBSELECT)
+    @Fetch(FetchMode.JOIN)
     private Set<Role> roles;
     private String description;
+    @ManyToOne
+    private Anime anime;
 }

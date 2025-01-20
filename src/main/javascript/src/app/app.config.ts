@@ -12,6 +12,7 @@ import {MessageTemplateService} from "./service/MessageTemplateService";
 import {MessageService} from "primeng/api";
 import {ContextService} from "./service/ContextService";
 import {AnimeService} from "./service/AnimeService";
+import {DialogService} from "primeng/dynamicdialog";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,9 +26,10 @@ export const appConfig: ApplicationConfig = {
     MessageTemplateService,
     MessageService,
     WebClientService,
-    ContextService
+    ContextService,
+    DialogService,
   ]
 };
 
-export const tablePageSize: number = 7;
+export const tablePageSize: number = 5;
 export const messageLife: number = 3000;
