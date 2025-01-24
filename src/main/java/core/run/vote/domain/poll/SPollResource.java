@@ -1,10 +1,9 @@
-package core.run.vote.role;
+package core.run.vote.domain.poll;
 
-import core.run.vote.sharacter.Sharacter;
+import core.run.vote.domain.role.Role;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Uni;
-import jakarta.persistence.PersistenceException;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import org.jboss.logging.Logger;
@@ -14,48 +13,48 @@ import java.util.UUID;
 
 import static jakarta.ws.rs.core.Response.Status.*;
 
-@Path("roles")
+@Path("single-poll")
 @Produces("application/json")
 @Consumes("application/json")
-public class RoleResource {
+public class SPollResource {
 
-    private static final Logger LOGGER = Logger.getLogger(RoleResource.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(SPollResource.class.getName());
 
     @GET
-    public Uni<List<Role>> get() {
-        return Role.listAll(Sort.by("name"));
+    public Uni<List<SPoll>> get() {
+        return SPoll.findAll(Sort.by("name"))
+                .list();
     }
 
     @GET
     @Path("/{id}")
-    public Uni<Role> getSingle(@PathParam("id") UUID id) {
-        return Role.findById(id);
+    public Uni<SPoll> getSingle(@PathParam("id") UUID id) {
+        return SPoll.findById(id);
     }
 
     @POST
-    public Uni<Response> create(Role role) {
-        if (role == null || role.getId() != null) {
+    public Uni<Response> create(SPoll SPoll) {
+        if (SPoll == null || SPoll.getId() != null) {
             throw new WebApplicationException("Id was invalidly set on request.", 422);
         }
 
-        return Panache.withTransaction(role::persist)
-                .replaceWith(Response.ok(role).status(CREATED)::build);
+        return Panache.withTransaction(SPoll::persist)
+                .replaceWith(Response.ok(SPoll).status(CREATED)::build);
     }
 
     @PUT
     @Path("/{id}")
-    public Uni<Response> update(@PathParam("id") UUID id, Role role) {
-        if (role == null || role.getName() == null) {
-            throw new WebApplicationException("Role name was not set on request.", 422);
+    public Uni<Response> update(@PathParam("id") UUID id, SPoll SPoll) {
+        if (SPoll == null || SPoll.getName() == null) {
+            throw new WebApplicationException("Single poll name was not set on request.", 422);
         }
 
         return Panache
                 .withTransaction(() -> Role.<Role> findById(id)
                         .onItem().ifNotNull().invoke(entity -> {
-                            entity.setName(role.getName());
-                            entity.setDescription(role.getDescription());
-                            //entity.setMeta(role.getMeta());
-                        } )
+                            entity.setName(SPoll.getName());
+                            entity.setDescription(SPoll.getDescription());
+                            })
                 )
                 .onItem().ifNotNull().transform(entity -> Response.ok(entity).build())
                 .onItem().ifNull().continueWith(Response.ok().status(NOT_FOUND)::build);
@@ -64,7 +63,7 @@ public class RoleResource {
     @DELETE
     @Path("{id}")
     public Uni<Response> delete(@PathParam("id") UUID id) {
-        return Panache.withTransaction(() -> Role.deleteById(id))
+        return Panache.withTransaction(() -> SPoll.deleteById(id))
                 .map(deleted -> deleted
                         ? Response.ok().status(NO_CONTENT).build()
                         : Response.ok().status(NOT_FOUND).build());

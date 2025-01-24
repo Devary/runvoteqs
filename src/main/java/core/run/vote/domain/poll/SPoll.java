@@ -1,18 +1,19 @@
-package core.run.vote.sharacter;
+package core.run.vote.domain.poll;
 
 
-import core.run.vote.anime.Anime;
-import core.run.vote.role.Role;
+
+import core.run.vote.domain.VotingSubject;
+import core.run.vote.domain.sharacter.Sharacter;
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jakarta.persistence.*;
-import jakarta.persistence.CascadeType;
 import lombok.*;
-import org.hibernate.annotations.*;
-
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -21,15 +22,12 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @SoftDelete(strategy = SoftDeleteType.DELETED,columnName = "isDeleted")
-public class Sharacter extends PanacheEntityBase {
+public class SPoll extends PanacheEntityBase implements VotingSubject {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.REFRESH)
-    @Fetch(FetchMode.JOIN)
-    private Set<Role> roles;
+    @ManyToMany()
+    private Set<Sharacter> sharacters;
     private String description;
-    @ManyToOne
-    private Anime anime;
 }

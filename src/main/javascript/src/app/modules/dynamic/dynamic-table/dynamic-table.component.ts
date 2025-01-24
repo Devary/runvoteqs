@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import {Table, TableModule} from "primeng/table";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {SharacterRoleImpl} from "../../../../model/data-model";
 import {Button} from "primeng/button";
 import {MultiSelectModule} from "primeng/multiselect";
 import {DropdownModule} from "primeng/dropdown";
@@ -26,7 +25,6 @@ import {ConfirmationService, MessageService} from "primeng/api";
 import {ConfirmDialog} from "primeng/confirmdialog";
 import {Editor} from "primeng/editor";
 import {Toast} from "primeng/toast";
-import {RoleService} from "../../../service/RoleService";
 import {tablePageSize} from "../../../app.config";
 import {MessageTemplateService} from "../../../service/MessageTemplateService";
 import {EntityRegistry} from "../../../service/annotations/entity-registry";
@@ -38,6 +36,8 @@ import {Tag} from "primeng/tag";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {ObjectListComponent} from "../object-list/object-list.component";
 import {Select} from "primeng/select";
+import {CustomCallService} from "../../../service/CustomCallService";
+import {SHARS_NOT_RELATED_TO_ANIME} from "../../../service/annotations/CustomCall";
 
 
 @Component({
@@ -65,10 +65,10 @@ import {Select} from "primeng/select";
   ],
   templateUrl: './dynamic-table.component.html',
   styleUrl: './dynamic-table.component.scss',
-  outputs: ['message','visibleConfirmation'],
-  providers: [ConfirmationService, MessageService,ContextService],
+  outputs: ['message', 'visibleConfirmation'],
+  providers: [ConfirmationService, MessageService, ContextService],
 })
-export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
+export class DynamicTableComponent implements OnInit, AfterViewInit, OnDestroy {
 
   //views
   @ViewChild('dt') dt!: Table;
@@ -78,10 +78,10 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
   protected isEdit = false;
   protected isCreate = false;
   object!: any;
-  selectedObjects!:  any[];
-  objects= signal<any[]> ([]);
+  selectedObjects!: any[];
+  objects = signal<any[]>([]);
   loading: boolean = true;
-  tuple! : [EntityRegistry,MessageAction];
+  tuple!: [EntityRegistry, MessageAction];
   defaultInitContext: any = {
     name: "",
     fields: [],
@@ -97,51 +97,76 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
 
   context = input<EntityContext>(this.defaultInitContext);
   protected readonly tablePageSize = tablePageSize;
-  service:any;
+  service: any;
   //icons
   protected readonly faCoffee = faCoffee;
 
   //behavior
   destroyed = new BehaviorSubject(null)
   fieldsToShow: TableField[] = [];
-  fieldsToShowStrings: string[]=[];
+  fieldsToShowStrings: string[] = [];
 
-  constructor(private destroyRef : DestroyRef,
+  constructor(private destroyRef: DestroyRef,
               private confirmationService: ConfirmationService,
               private messageService: MessageService,
               private messageTemplate: MessageTemplateService,
               public dialogService: DialogService,
+              public customCallService: CustomCallService,
               private contextService: ContextService) {
-    this.loading= true;
+    this.loading = true;
   }
-
 
 
   ngOnInit(): void {
 
   }
+
   generateFieldsToShow() {
-    this.context().fields.forEach(field=>{
-      if(this.context().disabledFields?.filter(fth => fth === field.name).length===0){
-      this.fieldsToShow.push(field);
-    }});
+    this.context().fields.forEach(field => {
+      if (this.context().disabledFields?.filter(fth => fth === field.name).length === 0) {
+        this.fieldsToShow.push(field);
+      }
+    });
   }
+
   ngAfterViewInit(): void {
     //init service
     this.service = this.contextService.getTableContextFor(this.context()?.name).service;
-    this.tuple = [EntityRegistry.getByName(this.context()?.name),EMPTY];
+    this.tuple = [EntityRegistry.getByName(this.context()?.name), EMPTY];
     console.log(this.context()?.name)
     this.service.getAll().subscribe((data: any[]) => this.objects.set(data));
     this.generateFieldsToShow();
     this.fieldsToShow.map(field => {
-      if (field.isMultiSelect){
-        // @ts-ignore
-        this.contextService.getTableContextFor(field.listType).service.getAll().subscribe(data =>field.setListObjects(data))
+        if (field.isMultiSelect || field.isSelect) {
+          if (field.listObjects?.length === 0) {
+            // @ts-ignore
+            this.customCallService.custom(SHARS_NOT_RELATED_TO_ANIME).subscribe(data => field.setListObjects(this.filterData(field,data)))
+          } else {
+            // @ts-ignore
+            this.contextService.getTableContextFor(field.listType).service.getAll().subscribe(data => field.setListObjects(this.filterData(field,data))
+
+            )
+          }
+        }
       }
-    })
-
-
+    )
     this.loading = false;
+  }
+  filterData(field:TableField,data:any):any{
+    if (field.fieldObjectsFilter === undefined){
+      return data;
+    }
+    console.log(field.fieldObjectsFilter)
+    console.log(data)
+
+    let _data:any[] = [];
+    data.forEach(obj => {
+
+      // @ts-ignore
+     if ( obj[field.fieldObjectsFilter?.filterName] === field.fieldObjectsFilter?.FilterValue)
+       _data.push(obj)
+    })
+    return _data;
   }
 
   ngOnDestroy(): void {
@@ -149,8 +174,8 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
     this.destroyed.complete();
   }
 
-  delete(obj : Object) {
-    this.selectedObjects=[];
+  delete(obj: Object) {
+    this.selectedObjects = [];
     this.selectedObjects.push(obj);
     this.deleteSelectedObjects();
   }
@@ -165,7 +190,7 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
     this.creationDialog = false;
     this.isEdit = false;
     this.isCreate = false;
-    this.object = new SharacterRoleImpl() ;
+    this.object = {};
   }
 
   exportCSV() {
@@ -179,24 +204,26 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
   }
 
   processEntity() {
-    if(this.isEdit){
+    if (this.isEdit) {
       this.changeActionTransition(MessageAction.SAVED);
       this.service.update(this.object).pipe(catchError((err) => {
-        this.messageService.add(this.messageTemplate.generateError(this.tuple,err.statusText))
+        this.messageService.add(this.messageTemplate.generateError(this.tuple, err.statusText))
         return EMPTY;
       }))
         .subscribe(res => this.messageService.add(this.messageTemplate.generateSuccess(this.tuple)));
       this.isEdit = false;
-    }else if(this.isCreate){
+    } else if (this.isCreate) {
       this.changeActionTransition(MessageAction.CREATED);
       let _roles = this.objects();
       this.service.create(this.object)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .pipe(catchError((err) => {
-          this.messageService.add(this.messageTemplate.generateError(this.tuple,err.statusText))
+          this.messageService.add(this.messageTemplate.generateError(this.tuple, err.statusText))
           return EMPTY;
-        })).subscribe(res => {this.objects.set([..._roles, res]);
-          this.messageService.add(this.messageTemplate.generateSuccess(this.tuple))});
+        })).subscribe(res => {
+        this.objects.set([..._roles, res]);
+        this.messageService.add(this.messageTemplate.generateSuccess(this.tuple))
+      });
       this.isCreate = false;
     }
     this.hideDialog();
@@ -204,23 +231,23 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
 
   deleteSelectedObjects() {
     this.confirmationService.confirm({
-      message: this.selectedObjects.length>1?'Are you sure you want to delete the selected ('+this.selectedObjects.length+') '+this.context()?.name+'(s) ?':
-        'Are you sure you want to delete the selected ('+this.selectedObjects.length+') '+this.context()?.name+' ?',
+      message: this.selectedObjects.length > 1 ? 'Are you sure you want to delete the selected (' + this.selectedObjects.length + ') ' + this.context()?.name + '(s) ?' :
+        'Are you sure you want to delete the selected (' + this.selectedObjects.length + ') ' + this.context()?.name + ' ?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
-      acceptLabel:"Yes delete",
-      acceptIcon:"pi pi-trash",
-      acceptButtonStyleClass:"danger",
+      acceptLabel: "Yes delete",
+      acceptIcon: "pi pi-trash",
+      acceptButtonStyleClass: "danger",
       accept: () => {
         this.changeActionTransition(MessageAction.DELETED);
         this.selectedObjects.forEach(sc => {
           this.service
             .delete(sc.id)
             .pipe(catchError((err) => {
-            this.messageService.add(this.messageTemplate.generateError(this.tuple,err.statusText))
-            return EMPTY;
+              this.messageService.add(this.messageTemplate.generateError(this.tuple, err.statusText))
+              return EMPTY;
             }))
-            .subscribe( res => this.messageService.add(this.messageTemplate.generateSuccess(this.tuple)))
+            .subscribe(res => this.messageService.add(this.messageTemplate.generateSuccess(this.tuple)))
         })
         this.objects.set(this.objects().filter((val) => !this.selectedObjects?.includes(val)));
         this.selectedObjects = [];
@@ -231,19 +258,21 @@ export class DynamicTableComponent implements OnInit,AfterViewInit,OnDestroy{
     });
   }
 
-  changeActionTransition(action : MessageAction){
+  changeActionTransition(action: MessageAction) {
     this.tuple[1] = action;
   }
 
   showMore(objElement: any) {
+    console.log(objElement)
     this.showMoreDialog = this.dialogService.open(ObjectListComponent, {
-      header: 'List of '+this.context().name+'s',
+      header: 'List of ' + this.context().name + 's',
       //width: '70%',
-      contentStyle: { overflow: 'auto' },
+      contentStyle: {overflow: 'auto'},
       baseZIndex: 10000,
       //maximizable: true,
-      data : objElement,
-      closable:true,
+      data: objElement,
+      closable: true,
+
     });
   }
 }

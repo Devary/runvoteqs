@@ -1,8 +1,8 @@
-package core.run.vote.anime;
+package core.run.vote.domain.poll.schema.votinglevel;
 
 
 
-import core.run.vote.sharacter.Sharacter;
+import core.run.vote.domain.poll.schema.votinggroup.VotingGroup;
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,13 +21,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @SoftDelete(strategy = SoftDeleteType.DELETED,columnName = "isDeleted")
-public class Anime extends PanacheEntityBase {
+public class VotingLevel extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private String name;
-    @OneToMany(mappedBy = "anime")
+    @Version
+    private long version;
+    @ManyToMany
     @Fetch(FetchMode.SELECT)
-    private Set<Sharacter> sharacters;
-    private String description;
+    private Set<VotingGroup> groups;
 }

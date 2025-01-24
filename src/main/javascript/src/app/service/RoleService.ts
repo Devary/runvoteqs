@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core";
-import {SharacterData, SharacterRole} from "../../model/data-model";
 import {WebClientService} from "./web-client.service"
-import {Observable} from "rxjs";
+import {SharacterRole} from "../data-model/SaharacterRole";
 
 
 @Injectable()

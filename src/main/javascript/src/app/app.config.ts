@@ -13,6 +13,7 @@ import {MessageService} from "primeng/api";
 import {ContextService} from "./service/ContextService";
 import {AnimeService} from "./service/AnimeService";
 import {DialogService} from "primeng/dynamicdialog";
+import {CustomCallService} from "./service/CustomCallService";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,6 +28,7 @@ export const appConfig: ApplicationConfig = {
     MessageService,
     WebClientService,
     ContextService,
+    CustomCallService,
     DialogService,
   ]
 };

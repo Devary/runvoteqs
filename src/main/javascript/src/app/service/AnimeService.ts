@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
-import {AnimeData} from "../../model/data-model";
 import {WebClientService} from "./web-client.service"
+import {Anime} from "../data-model/Anime";
 
 
 @Injectable()
@@ -14,20 +14,20 @@ export class AnimeService{
   }
 
   getOne(id: string) {
-    return this.service.getClient().get<AnimeData>(this.URI+"/"+id);
+    return this.service.getClient().get<Anime>(this.URI+"/"+id);
   }
   getAll() {
-    return this.service.getClient().get<AnimeData[]>(this.URI);
+    return this.service.getClient().get<Anime[]>(this.URI);
   }
-  create(anime: AnimeData) {
-    return this.service.getClient().post<AnimeData>(this.URI,anime);
+  create(anime: Anime) {
+    return this.service.getClient().post<Anime>(this.URI,anime);
   }
 
   delete(id: string) {
     return this.service.getClient().delete<string>(this.URI+"/"+id);
   }
-  update(data: AnimeData) {
+  update(data: Anime) {
     console.log("update", data);
-    return this.service.getClient().put<AnimeData>(this.URI+"/"+data.id,data);
+    return this.service.getClient().put<Anime>(this.URI+"/"+data.id,data);
   }
 }

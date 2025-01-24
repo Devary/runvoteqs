@@ -1,7 +1,8 @@
 import {Injectable} from "@angular/core";
-import {SharacterData, SharacterRole} from "../../model/data-model";
 import {WebClientService} from "./web-client.service"
 import {Observable} from "rxjs";
+import {Sharacter} from "../data-model/Sharacter";
+import {AnimeService} from "./AnimeService";
 
 
 @Injectable()
@@ -11,32 +12,37 @@ export class SharacterService{
   URI : string;
   UPLOAD_URL: string = this.service.buildURI()+"/v1/upload";
 
-  constructor(private service : WebClientService) {
+  constructor(private service : WebClientService,private animeService : AnimeService) {
     this.URI = service.buildURI()+this.INITIAL;
   }
 
   getOne(id: string) {
-    return this.service.getClient().get<SharacterData>(this.URI+"/"+id);
+    return this.service.getClient().get<Sharacter>(this.URI+"/"+id);
   }
+
+
   getAll() {
-    return this.service.getClient().get<SharacterData[]>(this.URI);
+    return this.service.getClient().get<Sharacter[]>(this.URI);
   }
-  create(sharacter: SharacterData) {
-    return this.service.getClient().post<SharacterData>(this.URI,sharacter);
+  create(sharacter: Sharacter) {
+    return this.service.getClient().post<Sharacter>(this.URI,sharacter);
   }
 
   delete(id: string) {
     return this.service.getClient().delete<string>(this.URI+"/"+id);
   }
-  update(data: SharacterData) {
+  update(data: Sharacter) {
     console.log("update", data);
-    return this.service.getClient().put<SharacterData>(this.URI+"/"+data.id,data);
-  }
-  getRoles():Observable<SharacterRole[]> {
-    return this.service.getClient().get<SharacterRole[]>(this.URI+"/roles");
+    return this.service.getClient().put<Sharacter>(this.URI+"/"+data.id,data);
   }
 
   uploadImage(formData: FormData) : Observable<any> {
     return this.service.getClient().post<any>(this.service.buildURI()+"/upload",formData);
   }
+
+  appendAnime(sharacter: Sharacter) {
+  }
+
+
+
 }

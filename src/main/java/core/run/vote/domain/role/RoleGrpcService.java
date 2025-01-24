@@ -1,4 +1,4 @@
-package core.run.vote.role;
+package core.run.vote.domain.role;
 
 import com.google.protobuf.Empty;
 import core.run.vote.RoleRequest;

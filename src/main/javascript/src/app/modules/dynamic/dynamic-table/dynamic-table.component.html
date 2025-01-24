@@ -68,7 +68,8 @@
         </div>
         <div *ngIf="!field.isMultiSelect">
           <p *ngIf="field.isTextEditor" [innerHTML]="obj[field.name]"></p>
-          <p *ngIf="!field.isTextEditor">{{obj[field.name]}}</p>
+          <p *ngIf="field.isSelect && obj[field.name]">{{obj[field.name].name}}</p>
+          <p *ngIf="!field.isTextEditor && !field.isSelect">{{obj[field.name]}}</p>
         </div>
       </td>
       <td *ngIf="this.context().allowActions"><p-button icon="pi pi-trash" severity="danger" (onClick)="delete(obj)" /><p-button icon="pi pi-pencil" severity="info" (onClick)="edit(obj)" /></td>

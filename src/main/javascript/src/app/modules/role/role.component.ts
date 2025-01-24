@@ -22,10 +22,9 @@ export class RoleComponent {
       let _fields:TableField[]=[];
       var name : TableField= new TableField("name",TableFieldType.INPUT_TEXT);
       var description : TableField= new TableField("description",TableFieldType.TEXT_EDITOR,);
-      var roles : TableField= new TableField("roles",TableFieldType.MULTI_SELECT,"role");
-      _fields.push(name,description,roles)
+      _fields.push(name,description)
       this.context= new EntityContext(this.contextService.createContextScheme(
-        "sharacter",
+        "role",
         _fields,
         true,
         [],

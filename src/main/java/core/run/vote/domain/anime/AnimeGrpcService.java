@@ -1,4 +1,4 @@
-package core.run.vote.anime;
+package core.run.vote.domain.anime;
 
 import com.google.protobuf.Empty;
 import core.run.vote.AnimeRequest;

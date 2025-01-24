@@ -1,0 +1,31 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+
+option java_multiple_files =  true;
+option java_package = "core.run.vote";
+
+package spoll;
+
+
+message SPollRequest {
+  optional string id = 1;
+}
+
+message SPollResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message SPollForm {
+  string name = 2;
+  string description = 3;
+  string role=4;
+}
+
+service SPollService {
+  rpc findAll(google.protobuf.Empty) returns (stream SPollResponse);
+  rpc findOne(SPollRequest) returns (SPollResponse);
+  rpc findMany(stream SPollRequest) returns (stream SPollResponse);
+}

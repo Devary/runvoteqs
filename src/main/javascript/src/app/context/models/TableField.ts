@@ -1,15 +1,21 @@
 import {TableFieldType} from "./TableFieldType";
+import {ObjectFilter} from "./ObjectFilter";
 
 export class TableField {
   name: string;
   type: TableFieldType;
   listType?: string; ///object Type in case of the type is multiselect
   listObjects?: any[]; ///object Type in case of the type is multiselect
+  customCall?: String; ///object Type in case of the type is multiselect
+  fieldObjectsFilter?: ObjectFilter;
 
-  constructor(name: string, type: TableFieldType, listType?: string) {
+  constructor(name: string, type: TableFieldType, listType?: string,listObjects?: any[],customCall?:string,fieldObjectsFilter?: ObjectFilter) {
     this.name = name;
     this.type = type;
     this.listType = listType;
+    this.listObjects = listObjects;
+    this.customCall = customCall;
+    this.fieldObjectsFilter = fieldObjectsFilter;
   }
 
   get isMultiSelect(){

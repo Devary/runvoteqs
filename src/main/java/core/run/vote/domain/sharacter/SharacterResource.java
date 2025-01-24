@@ -1,11 +1,14 @@
-package core.run.vote.sharacter;
+package core.run.vote.domain.sharacter;
 
 import static jakarta.ws.rs.core.Response.Status.CREATED;
 import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 import static jakarta.ws.rs.core.Response.Status.NO_CONTENT;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import io.quarkus.panache.common.Parameters;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
@@ -23,8 +26,13 @@ public class SharacterResource {
 
     @GET
     public Uni<List<Sharacter>> get() {
-        return Sharacter.findAll(Sort.by("name"))
+        return Sharacter.findAll()
                 .list();
+    }
+    @GET
+    @Path("/wa")
+    public Uni<List<Sharacter>> getWA() {
+        return Sharacter.findWithoutAnime();
     }
 
     @GET
@@ -56,6 +64,7 @@ public class SharacterResource {
                             entity.setName(sharacter.getName());
                             entity.setDescription(sharacter.getDescription());
                             entity.setRoles(sharacter.getRoles());
+                            entity.setAnimeUuid(sharacter.getAnimeUuid());
                             })
                 )
                 .onItem().ifNotNull().transform(entity -> Response.ok(entity).build())

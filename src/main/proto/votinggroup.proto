@@ -1,0 +1,32 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+
+option java_multiple_files =  true;
+option java_package = "core.run.vote";
+
+package votingGroup;
+
+
+message VotingGroupRequest {
+  optional string id = 1;
+}
+
+message VotingGroupResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string role=4;
+}
+
+message VotingGroupForm {
+  string name = 2;
+  string description = 3;
+  string role=4;
+}
+
+service VotingGroupService {
+  rpc findAll(google.protobuf.Empty) returns (stream VotingGroupResponse);
+  rpc findOne(VotingGroupRequest) returns (VotingGroupResponse);
+  rpc findMany(stream VotingGroupRequest) returns (stream VotingGroupResponse);
+}

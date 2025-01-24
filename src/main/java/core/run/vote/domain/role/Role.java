@@ -1,4 +1,4 @@
-package core.run.vote.role;
+package core.run.vote.domain.role;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jakarta.persistence.*;
@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.hibernate.annotations.SoftDelete;
 import org.hibernate.annotations.SoftDeleteType;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Entity

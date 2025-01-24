@@ -1,0 +1,32 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+
+option java_multiple_files =  true;
+option java_package = "core.run.vote";
+
+package votingLevel;
+
+
+message VotingLevelRequest {
+  optional string id = 1;
+}
+
+message VotingLevelResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string role=4;
+}
+
+message VotingLevelForm {
+  string name = 2;
+  string description = 3;
+  string role=4;
+}
+
+service VotingLevelService {
+  rpc findAll(google.protobuf.Empty) returns (stream VotingLevelResponse);
+  rpc findOne(VotingLevelRequest) returns (VotingLevelResponse);
+  rpc findMany(stream VotingLevelRequest) returns (stream VotingLevelResponse);
+}

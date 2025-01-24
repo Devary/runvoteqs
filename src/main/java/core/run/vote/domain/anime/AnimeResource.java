@@ -1,5 +1,6 @@
-package core.run.vote.anime;
+package core.run.vote.domain.anime;
 
+import core.run.vote.domain.sharacter.Sharacter;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.panache.common.Sort;
 import io.smallrye.mutiny.Uni;

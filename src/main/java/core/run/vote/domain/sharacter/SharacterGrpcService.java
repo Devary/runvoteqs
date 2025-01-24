@@ -1,4 +1,4 @@
-package core.run.vote.sharacter;
+package core.run.vote.domain.sharacter;
 
 import com.google.protobuf.Empty;
 import core.run.vote.SharacterRequest;
