@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import core.run.vote.domain.anime.Anime;
+import core.run.vote.domain.sharacter.dto.AllParams;
 import io.quarkus.panache.common.Parameters;
+import io.smallrye.common.annotation.Blocking;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
@@ -34,7 +38,6 @@ public class SharacterResource {
     public Uni<List<Sharacter>> getWA() {
         return Sharacter.findWithoutAnime();
     }
-
     @GET
     @Path("/{id}")
     public Uni<Sharacter> getSingle(@PathParam("id") UUID id) {
@@ -64,7 +67,7 @@ public class SharacterResource {
                             entity.setName(sharacter.getName());
                             entity.setDescription(sharacter.getDescription());
                             entity.setRoles(sharacter.getRoles());
-                            entity.setAnimeUuid(sharacter.getAnimeUuid());
+                            entity.setAnime(sharacter.getAnime());
                             })
                 )
                 .onItem().ifNotNull().transform(entity -> Response.ok(entity).build())

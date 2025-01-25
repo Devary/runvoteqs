@@ -77,20 +77,12 @@ export class DynamicTableComponent implements OnInit, AfterViewInit, OnDestroy {
   protected creationDialog: boolean = false;
   protected isEdit = false;
   protected isCreate = false;
-  object!: any;
+  object!: {};
   selectedObjects!: any[];
   objects = signal<any[]>([]);
   loading: boolean = true;
   tuple!: [EntityRegistry, MessageAction];
-  defaultInitContext: any = {
-    name: "",
-    fields: [],
-    allowActions: true,
-    allowedActions: [],
-    allowExportAction: true,
-    disabledActions: [],
-    disableFields: []
-  }
+  defaultInitContext!: any;
 
   showMoreDialog: DynamicDialogRef | undefined;
 
@@ -114,6 +106,7 @@ export class DynamicTableComponent implements OnInit, AfterViewInit, OnDestroy {
               public customCallService: CustomCallService,
               private contextService: ContextService) {
     this.loading = true;
+    this.object = {};
   }
 
 
@@ -138,13 +131,12 @@ export class DynamicTableComponent implements OnInit, AfterViewInit, OnDestroy {
     this.generateFieldsToShow();
     this.fieldsToShow.map(field => {
         if (field.isMultiSelect || field.isSelect) {
-          if (field.listObjects?.length === 0) {
+          if (field.listObjects?.length === 0 && field.fieldObjectsFilter!==undefined) {
             // @ts-ignore
-            this.customCallService.custom(SHARS_NOT_RELATED_TO_ANIME).subscribe(data => field.setListObjects(this.filterData(field,data)))
+            this.customCallService.call(SHARS_NOT_RELATED_TO_ANIME).subscribe(data => field.setListObjects(this.filterData(field,data)))
           } else {
             // @ts-ignore
-            this.contextService.getTableContextFor(field.listType).service.getAll().subscribe(data => field.setListObjects(this.filterData(field,data))
-
+            this.contextService.getTableContextFor(field.listType).service.getAll().pipe().subscribe(data => field.setListObjects(this.filterData(field,data))
             )
           }
         }
@@ -154,18 +146,21 @@ export class DynamicTableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   filterData(field:TableField,data:any):any{
     if (field.fieldObjectsFilter === undefined){
-      return data;
+      this.object[field.name]= field.listObjects;
+      field.listObjects = this.objects().at(this.object["index"]);
+      console.log(this.object["index"])
+      //data.forEach(d => {
+      //  field.listObjects?.push(d)
+      //});
     }
-    console.log(field.fieldObjectsFilter)
-    console.log(data)
-
     let _data:any[] = [];
     data.forEach(obj => {
-
       // @ts-ignore
      if ( obj[field.fieldObjectsFilter?.filterName] === field.fieldObjectsFilter?.FilterValue)
-       _data.push(obj)
+       _data.push(obj);
+       field.listObjects?.push(obj);
     })
+    this.object[field.name].push(_data);
     return _data;
   }
 
@@ -197,10 +192,13 @@ export class DynamicTableComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dt.exportCSV();
   }
 
-  edit(role: Object) {
-    this.object = role;
+  edit(obj: any, rowIndex: number) {
+    this.object = obj;
     this.creationDialog = true;
     this.isEdit = true;
+    this.object["index"] = rowIndex;
+    //console.log(this.objects().at(rowIndex).sharacters)
+    //this.object["sharacters"].push(this.objects().at(rowIndex).sharacters);
   }
 
   processEntity() {
@@ -274,6 +272,15 @@ export class DynamicTableComponent implements OnInit, AfterViewInit, OnDestroy {
       closable: true,
 
     });
+  }
+
+  debug() {
+    this.fieldsToShow.forEach(obj => {
+      if (obj.isMultiSelect){
+        console.log(obj.listObjects)
+        console.log(this.object[obj.name])
+      }
+    })
   }
 }
 

@@ -53,7 +53,7 @@
   </ng-template>
   <ng-template pTemplate="body" let-obj let-rowIndex="rowIndex">
 
-    <tr [pSelectableRow]="obj" [pSelectableRowIndex]="rowIndex" >
+    <tr [pSelectableRow]="obj" [pSelectableRowIndex]="rowIndex">
       <td *ngFor="let field of fieldsToShow">
         <div *ngIf="field.isMultiSelect">
           <p *ngIf="obj[field.name].length > 1">
@@ -72,7 +72,7 @@
           <p *ngIf="!field.isTextEditor && !field.isSelect">{{obj[field.name]}}</p>
         </div>
       </td>
-      <td *ngIf="this.context().allowActions"><p-button icon="pi pi-trash" severity="danger" (onClick)="delete(obj)" /><p-button icon="pi pi-pencil" severity="info" (onClick)="edit(obj)" /></td>
+      <td *ngIf="this.context().allowActions"><p-button icon="pi pi-trash" severity="danger" (onClick)="delete(obj)" /><p-button icon="pi pi-pencil" severity="info" (onClick)="edit(obj,rowIndex)" /></td>
     </tr>
   </ng-template>
   <ng-template #emptymessage>
@@ -83,7 +83,7 @@
 </p-table>
 
 
-<p-dialog [(visible)]="creationDialog" [style]="{ width: '650px',height:'100%' }" header="{{this.context().name}} Details" [modal]="true" (onHide)="hideDialog()">
+<p-dialog [(visible)]="creationDialog" [style]="{ width: '650px',height:'100%' }" header="{{this.context().name}} Details" [modal]="true" (onHide)="hideDialog()" (change)="debug()">
   <ng-template #content>
 
     <div class="flex flex-col gap-6">
@@ -96,7 +96,7 @@
           <div *ngIf="field.isMultiSelect">
             <div>
               <label for="{{field.name}}" class="block font-bold mb-3">{{field.name | titlecase}}*</label>
-              <p-multiselect [options]="field.listObjects" optionLabel="name" placeholder="Select Roles" [(ngModel)]="object[field.name]" [maxSelectedLabels]="3" styleClass="w-full md:w-80" id="role"  ></p-multiselect>
+              <p-multiselect [options]="field.listObjects" optionLabel="name" placeholder="Select Roles" [(ngModel)]="object[field.name]" [maxSelectedLabels]="3" styleClass="w-full md:w-80" id="role" ></p-multiselect>
             </div>
           </div>
           <div *ngIf="field.isSelect">

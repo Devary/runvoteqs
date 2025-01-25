@@ -25,8 +25,9 @@ export class AnimeComponent {
     var name: TableField = new TableField("name", TableFieldType.INPUT_TEXT);
     var description: TableField = new TableField("description", TableFieldType.TEXT_EDITOR,);
 
-    let sharacterFilter = new ObjectFilter("delete","_deleted",true);
-    var sharacters: TableField = new TableField("sharacters", TableFieldType.MULTI_SELECT, "sharacter", [],SHARS_NOT_RELATED_TO_ANIME,sharacterFilter);
+    let sharacterFilter = new ObjectFilter("delete","_deleted",false);
+    var sharacters: TableField = new TableField("sharacters", TableFieldType.MULTI_SELECT, "sharacter", []);
+    //var sharacters: TableField = new TableField("sharacters", TableFieldType.MULTI_SELECT, "sharacter", [],SHARS_NOT_RELATED_TO_ANIME,sharacterFilter);
     //personalize output in the multiselect sharacter
     //override the future value
     let shars:Sharacter[] = []

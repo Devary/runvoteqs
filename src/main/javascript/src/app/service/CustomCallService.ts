@@ -16,9 +16,9 @@ export class CustomCallService {
   }
 
   // @ts-ignore
-  custom(call:string): Observable<any> {
+  call(call:string): Observable<any> {
     switch (call){
-      case SHARS_NOT_RELATED_TO_ANIME : return this.service.getClient().get<Sharacter>(this.URI+"/sharacters/wa/");
+      case SHARS_NOT_RELATED_TO_ANIME : return this.service.getClient().get<Sharacter[]>(this.URI+"/sharacters/wa/");
     }
   }
 
