@@ -45,12 +45,13 @@ public class Sharacter extends PanacheEntityBase {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
-    @Fetch(FetchMode.JOIN)
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.REFRESH)
+    //@Fetch(FetchMode.JOIN)
     private Set<Role> roles;
     private String description;
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
     @JsonIgnoreProperties("sharacters")
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(table = "anime_sharacter",referencedColumnName = "id",foreignKey = @ForeignKey(name = "anime_id"))
     private Anime anime;
     @Column(name = "isdeleted",insertable = false,updatable = false)

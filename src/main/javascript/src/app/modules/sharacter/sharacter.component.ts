@@ -27,7 +27,7 @@ export class SharacterComponent {
     let _fields:TableField[]=[];
     var name : TableField= new TableField("name",TableFieldType.INPUT_TEXT);
     var description : TableField= new TableField("description",TableFieldType.TEXT_EDITOR,);
-    var roles : TableField= new TableField("roles",TableFieldType.MULTI_SELECT,"role");
+    var roles : TableField= new TableField("roles",TableFieldType.MULTI_SELECT,"role",[]);
     var anime : TableField= new TableField("anime",TableFieldType.SELECT,"anime");
     _fields.push(name,description,roles,anime)
     this.context= new EntityContext(this.contextService.createContextScheme(

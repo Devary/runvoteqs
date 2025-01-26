@@ -37,7 +37,6 @@ import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {ObjectListComponent} from "../object-list/object-list.component";
 import {Select} from "primeng/select";
 import {CustomCallService} from "../../../service/CustomCallService";
-import {SHARS_NOT_RELATED_TO_ANIME} from "../../../service/annotations/CustomCall";
 
 
 @Component({
@@ -133,7 +132,7 @@ export class DynamicTableComponent implements OnInit, AfterViewInit, OnDestroy {
         if (field.isMultiSelect || field.isSelect) {
           if (field.listObjects?.length === 0 && field.fieldObjectsFilter!==undefined) {
             // @ts-ignore
-            this.customCallService.call(SHARS_NOT_RELATED_TO_ANIME).subscribe(data => field.setListObjects(this.filterData(field,data)))
+            this.customCallService.call(field.customCallParams.customCallLink).subscribe(data => field.setListObjects(this.filterData(field,data)))
           } else {
             // @ts-ignore
             this.contextService.getTableContextFor(field.listType).service.getAll().pipe().subscribe(data => field.setListObjects(this.filterData(field,data))
@@ -145,22 +144,31 @@ export class DynamicTableComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loading = false;
   }
   filterData(field:TableField,data:any):any{
+    this.object[field.name]= field.listObjects;
     if (field.fieldObjectsFilter === undefined){
-      this.object[field.name]= field.listObjects;
-      field.listObjects = this.objects().at(this.object["index"]);
-      console.log(this.object["index"])
-      //data.forEach(d => {
-      //  field.listObjects?.push(d)
-      //});
+      return data;
     }
     let _data:any[] = [];
+    //if (field.customCallParams !== undefined) {
+    //  //todo:lezem t3adi l'id mta3 l'anime
+    //  this.customCallService.callWithParams(field.customCallParams.customCallLink,field.customCallParams.customCallParams.get("attr")).subscribe()
+    //}
     data.forEach(obj => {
       // @ts-ignore
-     if ( obj[field.fieldObjectsFilter?.filterName] === field.fieldObjectsFilter?.FilterValue)
-       _data.push(obj);
-       field.listObjects?.push(obj);
+      console.log(obj[field.fieldObjectsFilter?.filterName]===field.fieldObjectsFilter?.FilterValue)
+      // @ts-ignore
+      if ( obj[field.fieldObjectsFilter?.filterName] === field.fieldObjectsFilter?.FilterValue){
+        _data.push(obj);
+      }
+       //field.listObjects?.push(obj);
     })
-    this.object[field.name].push(_data);
+    console.log(_data)
+    console.log(field.listObjects)
+    console.log(this.object[field.name])
+    console.log(this.objects().at(this.object["index"]))
+    //_data.push(field.listObjects);
+    //console.log(_data,field.listObjects,this.object[field.name]);
+    //this.object[field.name]= field.listObjects;
     return _data;
   }
 
@@ -197,8 +205,6 @@ export class DynamicTableComponent implements OnInit, AfterViewInit, OnDestroy {
     this.creationDialog = true;
     this.isEdit = true;
     this.object["index"] = rowIndex;
-    //console.log(this.objects().at(rowIndex).sharacters)
-    //this.object["sharacters"].push(this.objects().at(rowIndex).sharacters);
   }
 
   processEntity() {
