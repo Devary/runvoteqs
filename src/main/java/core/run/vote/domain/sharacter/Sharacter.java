@@ -49,7 +49,7 @@ public class Sharacter extends PanacheEntityBase {
     //@Fetch(FetchMode.JOIN)
     private Set<Role> roles;
     private String description;
-    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
     @JsonIgnoreProperties("sharacters")
     @Fetch(FetchMode.JOIN)
     @JoinColumn(table = "anime_sharacter",referencedColumnName = "id",foreignKey = @ForeignKey(name = "anime_id"))

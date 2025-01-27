@@ -6,3 +6,10 @@ export interface Anime{
   description :string;
   sharacters:Sharacter[];
 }
+
+export class AnimeImpl implements Anime {
+  description = "";
+  id = "";
+  name= "";
+  sharacters = [];
+}

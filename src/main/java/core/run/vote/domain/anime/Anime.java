@@ -27,7 +27,7 @@ public class Anime extends PanacheEntityBase implements VotingSubject {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
     //@JsonIgnoreProperties("anime")
     private Set<Sharacter> sharacters;
     private String description;

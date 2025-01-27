@@ -9,7 +9,7 @@ import {provideAnimationsAsync} from "@angular/platform-browser/animations/async
 import Aura from "@primeng/themes/aura";
 import {RoleService} from "./service/RoleService";
 import {MessageTemplateService} from "./service/MessageTemplateService";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {ContextService} from "./service/ContextService";
 import {AnimeService} from "./service/AnimeService";
 import {DialogService} from "primeng/dynamicdialog";
@@ -29,6 +29,7 @@ export const appConfig: ApplicationConfig = {
     WebClientService,
     ContextService,
     CustomCallService,
+    ConfirmationService,
     DialogService,
   ]
 };

@@ -24,6 +24,11 @@ export class SharacterService{
   getAll() {
     return this.service.getClient().get<Sharacter[]>(this.URI);
   }
+
+  getNotLinkedToAnime() {
+    return this.service.getClient().get<Sharacter[]>(this.URI+"/wa/");
+  }
+
   create(sharacter: Sharacter) {
     return this.service.getClient().post<Sharacter>(this.URI,sharacter);
   }
@@ -39,10 +44,4 @@ export class SharacterService{
   uploadImage(formData: FormData) : Observable<any> {
     return this.service.getClient().post<any>(this.service.buildURI()+"/upload",formData);
   }
-
-  appendAnime(sharacter: Sharacter) {
-  }
-
-
-
 }
