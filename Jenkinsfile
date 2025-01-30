@@ -20,14 +20,14 @@ pipeline {
         
         stage('compile') {
 	        steps {
-	       		sh 'mvn clean package -DskipTests'
+	       		bat 'mvn clean package -DskipTests'
 	        }        	                  
         }
         
          stage('tests') {
 	        steps {
 
-           		sh 'mvn jacoco:prepare-agent test -P coverage'
+           		bat 'mvn jacoco:prepare-agent test -P coverage'
            		
            		jacoco(
     				execPattern: '**/target/jacoco.exec',
@@ -39,7 +39,7 @@ pipeline {
         
         stage('sonar') {
         	steps {
-        		sh 'mvn jacoco:report sonar:sonar -Dsonar.projectKey=runvoteqs -Dsonar.projectName=runvoteqs'
+        		bat 'mvn jacoco:report sonar:sonar -Dsonar.projectKey=runvoteqs -Dsonar.projectName=runvoteqs'
         	}
         }
         
@@ -51,7 +51,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh '''
+                    bat '''
 						mkdir target/package/apps-repo
 						cp target/$NAME-$VERSION.jar target/package/apps-repo/$NAME.jar
 						cd target/package && zip -r ../$NAME-$VERSION.zip .
