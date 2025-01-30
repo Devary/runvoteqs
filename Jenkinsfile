@@ -20,17 +20,14 @@ pipeline {
         
         stage('compile') {
 	        steps {
-	       		withMaven() {           
-           			sh 'mvn clean package -DskipTests'           			
-           		}     
+	       		sh 'mvn clean package -DskipTests'
 	        }        	                  
         }
         
          stage('tests') {
 	        steps {
-	       		withMaven() {           
-           			sh 'mvn jacoco:prepare-agent test -P coverage'
-           		}
+
+           		sh 'mvn jacoco:prepare-agent test -P coverage'
            		
            		jacoco(
     				execPattern: '**/target/jacoco.exec',
@@ -42,9 +39,7 @@ pipeline {
         
         stage('sonar') {
         	steps {
-        		withSonarQubeEnv('SonarQube') {
-        			 sh 'mvn jacoco:report sonar:sonar -Dsonar.projectKey=runvoteqs -Dsonar.projectName=runvoteqs'
-        		}
+        		sh 'mvn jacoco:report sonar:sonar -Dsonar.projectKey=runvoteqs -Dsonar.projectName=runvoteqs'
         	}
         }
         
