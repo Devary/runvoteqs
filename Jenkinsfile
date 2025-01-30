@@ -1,6 +1,3 @@
-def configuration = [vaultUrl: 'https://localhost:8200/',  vaultCredentialId: 'root', engineVersion: 2]
-
-
 pipeline {
     agent any
 
