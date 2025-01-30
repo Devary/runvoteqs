@@ -8,10 +8,6 @@ pipeline {
         maven 'Maven'
     }
 
-	options {
-		buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
-	}
-
     environment {
         VERSION = readMavenPom().getVersion()
         NAME = readMavenPom().getArtifactId()
@@ -70,34 +66,6 @@ pipeline {
                     '''
                 }
             }
-        }
-
-        stage('minio') {
-            when {
-                anyOf {
-                    branch 'main'; branch 'dev'
-                }
-            }
-            /* steps {
-                minio bucket:'epvoteprsb',
-                      credentialsId:'minio-epvoteprsb',
-                      host:'https://cicd-automation-minio.secure.ep.parl.union.eu/',
-                      includes:'target/$NAME-$VERSION.zip',
-                      targetFolder:'$NAME'
-            } */
-        }
-
-        stage ('Request deployment DEV') {
-            /* steps {
-                echo "Request deployment in DEV"
-                withVault([configuration: configuration, vaultSecrets: rundeck_webhooks_dev]) {
-                        script {
-                            String url = " https://cicd-automation-rundeck.secure.ep.parl.union.eu/api/41/webhook/${rundeck_dev_token}#${rundeck_dev_name}"
-                            String response = sh(script: "curl -X POST -H \"Content-Type: application/json\" -d '{\"version\":\"${VERSION}\",\"quarkus_app\":\"$NAME\"}' -s $url", returnStdout: true).trim()
-                            echo response
-                        }
-                }
-            } */
         }
         
     }
