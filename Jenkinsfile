@@ -67,4 +67,4 @@ pipeline {
 }
 
 
-     
+     mvn clean verify sonar:sonar -Dsonar.projectKey=runvoteqs -Dsonar.projectName='runvoteqs' -Dsonar.host.url=http://localhost:9000 -Dsonar.token=sqp_1792901df122f97cb955d01cf3c2940c4162b9b0

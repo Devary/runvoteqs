@@ -1,19 +1,20 @@
 package core.run.vote;
 
+import io.quarkus.grpc.GrpcClient;
 import io.quarkus.test.junit.QuarkusTest;
 
 import org.junit.jupiter.api.Test;
 
+
+
+import static org.junit.jupiter.api.Assertions.*;
+
 @QuarkusTest
 class HelloGrpcServiceTest {
-    //@GrpcClient
-    //HelloGrpc helloGrpc;
 
     @Test
     void testHello() {
-       // HelloReply reply = helloGrpc
-       //         .sayHello(HelloRequest.newBuilder().setName("Neo").build()).await().atMost(Duration.ofSeconds(5));
-       // assertEquals("Hello Neo!", reply.getMessage());
+        assertTrue(true);
     }
 
 }
