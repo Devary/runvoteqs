@@ -38,8 +38,10 @@ pipeline {
         }
         
     stage('SonarQube Analysis') {
+        steps {
         withSonarQubeEnv() {
-            bat "mvn clean verify sonar:sonar -Dsonar.projectKey=runvoteqs -Dsonar.projectName='runvoteqs'"
+                    bat "mvn clean verify sonar:sonar -Dsonar.projectKey=runvoteqs -Dsonar.projectName='runvoteqs'"
+                }
         }
     }
         
