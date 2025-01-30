@@ -37,11 +37,11 @@ pipeline {
 	        }        	                  
         }
         
-        stage('sonar') {
-        	steps {
-        		bat 'mvn jacoco:report sonar:sonar -Dsonar.projectKey=runvoteqs -Dsonar.projectName=runvoteqs'
-        	}
+    stage('SonarQube Analysis') {
+        withSonarQubeEnv() {
+            bat "mvn clean verify sonar:sonar -Dsonar.projectKey=runvoteqs -Dsonar.projectName='runvoteqs'"
         }
+    }
         
         stage('package') {
             when {
