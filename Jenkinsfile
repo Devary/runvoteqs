@@ -53,7 +53,7 @@ pipeline {
             }
             steps {
                 script {
-                    bat '''
+                    sh '''
 						mkdir target/package/apps-repo
 						cp target/$NAME-$VERSION.jar target/package/apps-repo/$NAME.jar
 						cd target/package && zip -r ../$NAME-$VERSION.zip .
