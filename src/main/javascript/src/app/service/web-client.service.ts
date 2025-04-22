@@ -5,7 +5,7 @@ import { HttpClient } from "@angular/common/http";
 export class WebClientService {
 
   HOST: string = "http://localhost";
-  PORT: string = ":8811";
+  PORT: string = ":8989";
   constructor(private http: HttpClient) {
     this.buildURI();
   }

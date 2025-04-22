@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: runvote-main-jvm
+  labels:
+    app: runvote-main-jvm
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: runvote-main-jvm
+  template:
+    metadata:
+      labels:
+        app: runvote-main-jvm
+    spec:
+      containers:
+        - name: runvote-container
+          image: devary/runvote-main-jvm:latest
+          ports:
+            - containerPort: 8989
+              name: http-bapp-svc
+          env:
+            - name: QUARKUS_DATASOURCE_REACTIVE_URL
+              value: "vertx-reactive:postgresql://postgres:5432/postgres"
+            - name: QUARKUS_DATASOURCE_USERNAME
+              value: "postgres"
+            - name: QUARKUS_DATASOURCE_PASSWORD
+              value: "postgres"
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: docker-registry-secret
