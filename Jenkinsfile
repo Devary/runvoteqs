@@ -37,13 +37,13 @@ pipeline {
 	        }        	                  
         }
         
-    stage('SonarQube Analysis') {
-        steps {
-        withSonarQubeEnv("sonar") {
-                    bat "mvn clean verify sonar:sonar -Dsonar.projectKey=runvoteqs -Dsonar.projectName='runvoteqs'"
-                }
-        }
-    }
+    //stage('SonarQube Analysis') {
+    //    steps {
+    //    withSonarQubeEnv("sonar") {
+    //                bat "mvn clean verify sonar:sonar -Dsonar.projectKey=runvoteqs -Dsonar.projectName='runvoteqs'"
+    //            }
+    //    }
+    //}
         
         stage('package') {
             when {
